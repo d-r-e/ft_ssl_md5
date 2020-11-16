@@ -34,4 +34,5 @@ push: fclean
 	git commit -m "d-r-e"
 	git push
 
-
+norm:
+	norminette $(SRC) $(INC)
