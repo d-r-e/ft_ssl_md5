@@ -10,11 +10,13 @@ FLAGS= -Wall -Wextra -Werror
 libft:
 	make -C ./src/libft
 
-$(NAME): $(SRC) $(INC) libft
-	gcc $(FLAGS) $(SRC) -l ./src/libft/libft.a -o $(NAME)
+$(NAME): $(SRC) $(INC)
+	make -C ./src/libft
+	gcc $(FLAGS) $(SRC) -L. src/libft/libft.a -o $(NAME)
 
 clean:
 	make -C ./src/libft clean
+	rm -f libft.a
 
 fclean: clean
 	make -C ./src/libft fclean
