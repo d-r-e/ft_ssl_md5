@@ -6,17 +6,17 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 10:19:47 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 12:23:21 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/16 12:32:11 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_ssl.h"
 
-char *read_stdin(void)
+char	*read_stdin(void)
 {
-	int rd;
-	char buff[2];
-	char *str;
+	int		rd;
+	char	buff[2];
+	char	*str;
 
 	str = ft_strdup("");
 	buff[1] = 0;
@@ -24,12 +24,10 @@ char *read_stdin(void)
 	{
 		str = ft_append(str, *buff);
 	}
-	return str;
-
+	return (str);
 }
 
-
-int	main(int argc, char **argv)
+int		main(int argc, char **argv)
 {
 	char *input;
 
@@ -38,8 +36,6 @@ int	main(int argc, char **argv)
 		input = read_stdin();
 		ft_putstr(input);
 		free(input);
-		//system("leaks ft_ssl");
-
 	}
 	if (argc == 2)
 		ft_puts(argv[1]);

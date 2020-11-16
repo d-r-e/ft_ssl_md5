@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 11:55:34 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 12:21:28 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/16 12:25:08 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ void	ft_putstr(const char *s)
 	write(1, s, ft_strlen(s));
 }
 
-void    ft_puts(const char *s)
+void	ft_puts(const char *s)
 {
-    write(1, s, ft_strlen(s));
-    write(1, "\n", 1);
+	write(1, s, ft_strlen(s));
+	write(1, "\n", 1);
 }
 
 char	*ft_strdup(const char *s1)
@@ -70,6 +70,5 @@ char	*ft_append(char *s, char c)
 	tmp[i + 1] = 0;
 	free(s);
 	s = tmp;
-	return s;
-
+	return (s);
 }

@@ -1,35 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ssl.h                                           :+:      :+:    :+:   */
+/*   md5.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 10:20:24 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 12:39:03 by darodrig         ###   ########.fr       */
+/*   Created: 2020/11/16 12:32:35 by darodrig          #+#    #+#             */
+/*   Updated: 2020/11/16 12:37:36 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_SSL_H
-# define FT_SSL_H
-
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <fcntl.h>
+#include "../inc/ft_ssl.h"
 
 /*
-** LIBFT
+** This is the main MD% algorithm.
+** input: string to convert
+** output: 128 bit hash, null-terminated
 */
-void	ft_puts(const char *s);
-void	ft_putstr(const char *s);
-char	*ft_strdup(const char *s1);
-size_t	ft_strlen(const char *s);
-char	*ft_append(char *s, char c);
 
-/*
-** MD5
-*/
-char	*ft_md5(const char *input);
+char	*ft_md5(const char *input)
+{
+	char hash[33];
 
-#endif
+	hash[32] = 0;
+	return (hash);
+}
