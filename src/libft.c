@@ -1,34 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   libft.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 10:19:47 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 12:10:33 by darodrig         ###   ########.fr       */
+/*   Created: 2020/11/16 11:55:34 by darodrig          #+#    #+#             */
+/*   Updated: 2020/11/16 12:06:19 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_ssl.h"
 
-void read_stdin(void)
+size_t	ft_strlen(const char *s)
 {
-	int rd;
-	char buff[2];
+	size_t i;
 
-	buff[1] = 0;
-	while ((rd = read(0, buff, 1)) > 0)
-	{
-		write(1, buff, 1);
-	}
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return (i);
 }
 
-
-int	main(int argc, char **argv)
+void    ft_puts(const char *s)
 {
-	if (argc == 1)
-		read_stdin();
-	if (argc == 2)
-		ft_puts(argv[1]);
+    write(1, s, ft_strlen(s));
+    write(1, "\n", 1);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	char	*s2;
+	int		i;
+	int		len;
+
+	len = 0;
+	while (s1[len])
+		len++;
+	if (!(s2 = malloc(sizeof(char) * (len + 1))))
+		return (NULL);
+	i = 0;
+	while (s1[i])
+	{
+		s2[i] = s1[i];
+		i++;
+	}
+	s2[i] = '\0';
+	return (s2);
 }
