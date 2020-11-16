@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 12:32:35 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 12:37:36 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/16 12:47:34 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ char	*ft_md5(const char *input)
 {
 	char hash[33];
 
+	(void)input;
 	hash[32] = 0;
-	return (hash);
+	return (ft_strdup(hash));
 }

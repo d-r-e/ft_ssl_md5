@@ -1,6 +1,6 @@
 NAME= ft_ssl
 
-SRC = src/main.c src/utils.c src/libft.c src/md5.c
+SRC = src/main.c src/utils.c src/libft.c src/libft2.c src/md5.c
 
 INC = inc/ft_ssl.h
 
