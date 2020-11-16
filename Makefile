@@ -29,7 +29,7 @@ all: $(NAME)
 x: re
 	./$(NAME)
 
-push:
+push: fclean
 	git add $(SRC) $(INC) Makefile
 	git commit -m "d-r-e"
 	git push
