@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 10:20:24 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 11:56:50 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/16 12:21:36 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 # include <fcntl.h>
 
 void	ft_puts(const char *s);
+void	ft_putstr(const char *s);
 char	*ft_strdup(const char *s1);
 size_t	ft_strlen(const char *s);
+char	*ft_append(char *s, char c);
 
 #endif
