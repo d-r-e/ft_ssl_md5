@@ -6,13 +6,14 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 10:19:47 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 12:52:05 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/17 12:37:05 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_ssl.h"
 
-char	*read_stdin(void)
+static char
+	*read_stdin(void)
 {
 	int		rd;
 	char	buff[2];
@@ -27,13 +28,15 @@ char	*read_stdin(void)
 	return (str);
 }
 
-static void	usage(void)
+static void
+	usage(void)
 {
 	ft_puts("usage: ft_ssl command [command opts] [command args]");
 	ft_puts("");
 }
 
-static void	invalid_command(const char *s)
+static void
+	invalid_command(const char *s)
 {
 	ft_putstr("ft_ssl: Error: '");
 	ft_putstr(s);
@@ -45,7 +48,8 @@ static void	invalid_command(const char *s)
 	ft_puts("");
 }
 
-int		main(int argc, char **argv)
+int
+	main(int argc, char **argv)
 {
 	char *input;
 
@@ -57,10 +61,20 @@ int		main(int argc, char **argv)
 		{
 			input = read_stdin();
 			ft_putstr(input);
+			
 			free(input);
 		}
 		else
 			invalid_command(argv[1]);
-		
 	}
+	print_bin(5);
+	ft_puts("");
+	print_bin(5 << 1);
+	ft_puts("");
+	print_bin(5 << 2);
+	ft_puts("");
+	print_bin(3);
+	ft_puts("");
+	print_bin(4457483668);
+	ft_puts("");
 }
