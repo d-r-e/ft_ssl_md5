@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 10:20:24 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/18 12:18:16 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/18 12:43:12 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void			ft_putchar(char c);
 ** MD5
 */
 
-void			step_one(t_md5	*md5);
+void			step12(t_md5	*md5);
 char			*ft_md5(const char *input);
 void			test_md5(const char *msg);
 

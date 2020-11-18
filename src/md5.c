@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 12:32:35 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/18 12:42:07 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/18 12:53:06 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 	
 } */
 
-void	step_one(t_md5	*m)
+void	step12(t_md5	*m)
 {
 	void *ptr;
 	uint64_t *ptr2;
@@ -38,8 +38,12 @@ void	step_one(t_md5	*m)
 	m->padded[m->len0 / 8] = 0b10000000;
 	ptr = &m->padded[(int)(m->len1 / 8)];
 	ptr2 = ptr;
+	/* ft_puts("");
+	ft_putnbr((uint64_t)m->len0 % (sizeof(uint64_t) * 8));
+	ft_puts(""); */
 	*ptr2 = (uint64_t)m->len0 % (sizeof(uint64_t) * 8);
-	free(m->msg);	
+	//free(m->msg);
+	//printbin(m->padded, m->len1 / 8 + 8);
 }
 
 
@@ -48,7 +52,7 @@ char	*ft_md5(const char *input)
 	t_md5 md5;
 
 	md5.msg = ft_strdup(input);
-	step_one(&md5);
+	step12(&md5);
 	return (NULL);
 }
 

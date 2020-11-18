@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 10:19:47 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/18 12:40:00 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/18 12:52:40 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,6 @@ int
 	(void)argc;
 	(void)argv;
 
-	ft_md5("hola");
-	ft_md5("");
-	ft_md5("asdfasdfasdfasdfa");
 	exit(0);
 	if (argc == 1)
 		usage();
