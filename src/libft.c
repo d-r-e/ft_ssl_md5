@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 11:55:34 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 12:44:46 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/18 09:11:38 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,9 @@ char	*ft_append(char *s, char c)
 	char	*tmp;
 	size_t	i;
 
-	tmp = malloc(ft_strlen(s) + 2);
+	tmp = malloc((ft_strlen(s) + 2) * sizeof(char));
+	if (!tmp)
+		return (NULL);
 	i = 0;
 	while (i < ft_strlen(s))
 	{
@@ -57,8 +59,10 @@ char	*ft_append(char *s, char c)
 		++i;
 	}
 	tmp[i] = c;
-	tmp[i + 1] = 0;
+	tmp[i + 1] = '\0';
+	ft_puts(tmp);
 	free(s);
+	ft_puts("END");
 	s = tmp;
 	return (s);
 }

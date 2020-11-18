@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 10:19:47 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/17 12:37:05 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/18 12:40:00 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,14 @@ int
 {
 	char *input;
 
+	(void)input;
+	(void)argc;
+	(void)argv;
+
+	ft_md5("hola");
+	ft_md5("");
+	ft_md5("asdfasdfasdfasdfa");
+	exit(0);
 	if (argc == 1)
 		usage();
 	if (argc == 2)
@@ -60,14 +68,13 @@ int
 		if (!ft_strcmp(argv[1], "md5"))
 		{
 			input = read_stdin();
-			ft_putstr(input);
-			
+			ft_puts(input);
 			free(input);
 		}
 		else
 			invalid_command(argv[1]);
 	}
-	print_bin(5);
+	/* print_bin(5);
 	ft_puts("");
 	print_bin(5 << 1);
 	ft_puts("");
@@ -76,5 +83,5 @@ int
 	print_bin(3);
 	ft_puts("");
 	print_bin(4457483668);
-	ft_puts("");
+	printf("len %zu\n", strbitlen("asdf234523452234")); */
 }

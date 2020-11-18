@@ -22,6 +22,8 @@ all: $(NAME)
 
 x: re
 	./$(NAME)
+m:	re
+	./$(NAME) md5
 
 push: fclean
 	git add $(SRC) $(INC) Makefile
