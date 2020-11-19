@@ -6,7 +6,7 @@
 /*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 10:20:24 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/18 12:43:12 by darodrig         ###   ########.fr       */
+/*   Updated: 2020/11/19 08:44:58 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,17 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <fcntl.h>
-
+# include <math.h>
 typedef struct	s_md5
 {
 	char		*msg;
 	uint64_t	len0;
 	uint8_t		*padded;
 	uint64_t	len1;
+	uint32_t	a;
+	uint32_t	b;
+	uint32_t	c;
+	uint32_t	d;
 }				t_md5;
 
 /*
@@ -55,5 +59,7 @@ void			printbin(void *data, int len);
 void			print_bin(__int128_t val);
 void			putcharbin(unsigned char c);
 uint64_t		strbitlen(const char *s);
+
+
 
 #endif
