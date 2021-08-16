@@ -35,6 +35,7 @@ int					ft_isalnum(int c);
 int					ft_isascii(int c);
 int					ft_isdigit(int c);
 size_t				ft_strlen(const char *s);
+void				ft_putstr(const char *s);
 char				*ft_strchr(const char *s, int c);
 char				*ft_strdup(const char *s1);
 char				*ft_strcpy(char *dst, const char *src);
