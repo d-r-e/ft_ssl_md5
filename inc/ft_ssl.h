@@ -14,6 +14,7 @@
 # define FT_SSL_H
 
 # include <stdlib.h>
+# include <stdint.h>
 # include <unistd.h>
 # include <stdio.h>
 # include <fcntl.h>

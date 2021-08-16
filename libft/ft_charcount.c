@@ -1,13 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_charcount.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: darodrig <darodrig@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darodrig <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/16 11:25:05 by darodrig          #+#    #+#             */
-/*   Updated: 2020/11/16 12:25:15 by darodrig         ###   ########.fr       */
+/*   Created: 2019/11/11 14:20:44 by darodrig          #+#    #+#             */
+/*   Updated: 2019/11/11 14:24:50 by darodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_ssl.h"
+#include "libft.h"
+
+int	ft_charcount(char *s, char c)
+{
+	int count;
+
+	count = 0;
+	while (*s != '\0')
+	{
+		if (*s == c)
+			count++;
+		s++;
+	}
+	return (count);
+}
