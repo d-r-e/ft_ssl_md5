@@ -1,30 +1,27 @@
 NAME= ft_ssl
 
-SRC = src/main.c
+SRC = src/main.c src/md5.c
 OBJ = $(SRC:.c=.o)
-INC = inc/ft_ssl.h
-LIBFT = libft/libft.a
+FLAGS= -O2 -Wall -Wextra -Werror -Wformat-security
+LIBFT=libft/libft.a
+INC=inc/$(NAME).h
 
-FLAGS= -Wall -Wextra -Werror -Wformat-security -g -fsanitize=address
-
-LIB= -I libft/libft.a
-
-
-
-$(NAME): $(OBJ) $(INC)
-	gcc $(FLAGS) $(OBJ) $(LIB) -o $(NAME)
-
-$(OBJ): $(SRC) $(LIBFT)
-	gcc $(FLAGS) -c $(SRC) -o $(OBJ)
+$(NAME): $(OBJ) $(LIBFT) 
+	gcc $(FLAGS) $(OBJ) -I libft -L libft -lft -o $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C libft
+
+%.o: %.c $(INC)
+	gcc $(FLAGS) -c -o $@ $<
+
 clean:
-	rm -f $(OBJ)
 	$(MAKE) clean -C libft
+	rm -f $(OBJ)
+
 fclean: clean
-	rm -f $(NAME)
 	$(MAKE) fclean -C libft
+	rm -f $(NAME)
 
 re: fclean all
 
@@ -33,7 +30,7 @@ all: $(NAME)
 x: $(NAME)
 	./$(NAME)
 m:	$(NAME)
-	./$(NAME) md5
+	echo 42 | ./$(NAME) md5
 
 push: fclean
 	git add libft $(SRC) $(INC) Makefile
