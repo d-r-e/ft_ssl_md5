@@ -1,6 +1,6 @@
 NAME= ft_ssl
 
-SRC = src/main.c src/md5.c
+SRC = src/main.c src/md5.c src/byte.c
 OBJ = $(SRC:.c=.o)
 FLAGS= -O2 -Wall -Wextra -Werror -Wformat-security
 LIBFT=libft/libft.a

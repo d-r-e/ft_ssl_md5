@@ -18,30 +18,41 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <math.h>
-
+# include <stdint.h>
 # include "../libft/libft.h"
 
-typedef union byte {
-    int i;
+typedef union s_word {
+    uint32_t i;
     struct {
-        char a : 1;
-		char b : 1;
-		char c : 1;
-		char d : 1;
+        uint8_t b0 : 8;
+		uint8_t b1 : 8;
+		uint8_t b2 : 8;
+		uint8_t b3 : 8;
     } bit;
-} t_byte;
+} t_word;
 
-typedef struct s_word { t_byte bytes[4]; } t_word;
 
-typedef struct s_md5
+typedef struct s_ssl
 {
+	int p;
+	int r;
+	int s;
+	int q;
+	int md5;
 	char	*str;
 	t_word	a;
 	t_word	b;
 	t_word	c;
 	t_word	d;
-}	t_md5;
+	char *input;
+	char *file;
+}	t_opt;
 
-int ft_md5(const char *s);
+t_opt g_ssl;
+
+int ft_md5(const char *s, const char *file);
+t_word init_word(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
+t_word init_word_int(int n);
+void print_word(t_word w);
 
 #endif
