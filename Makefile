@@ -1,34 +1,45 @@
 NAME= ft_ssl
 
-SRC = src/main.c src/utils.c src/libft.c src/libft2.c src/md5.c src/bits.c
-
+SRC = src/main.c
+OBJ = $(SRC:.c=.o)
 INC = inc/ft_ssl.h
+LIBFT = libft/libft.a
+
+FLAGS= -Wall -Wextra -Werror -Wformat-security -g -fsanitize=address
+
+LIB= -I libft/libft.a
 
 
-FLAGS= -Wall -Wextra -Werror
 
+$(NAME): $(OBJ) $(INC)
+	gcc $(FLAGS) $(OBJ) $(LIB) -o $(NAME)
 
-$(NAME): $(SRC) $(INC)
-	gcc $(FLAGS) $(SRC) -o $(NAME)
+$(OBJ): $(SRC) $(LIBFT)
+	gcc $(FLAGS) -c $(SRC) -o $(OBJ)
 
+$(LIBFT):
+	$(MAKE) -C libft
 clean:
-
+	rm -f $(OBJ)
+	$(MAKE) clean -C libft
 fclean: clean
 	rm -f $(NAME)
+	$(MAKE) fclean -C libft
 
 re: fclean all
 
 all: $(NAME)
 
-x: re
+x: $(NAME)
 	./$(NAME)
-m:	re
+m:	$(NAME)
 	./$(NAME) md5
 
 push: fclean
-	git add $(SRC) $(INC) Makefile
+	git add libft $(SRC) $(INC) Makefile
 	git commit -m "d-r-e"
 	git push
 
 norm:
+	@norminette -v
 	norminette $(SRC) $(INC)

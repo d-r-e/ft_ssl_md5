@@ -1,3 +1,5 @@
+*.pdf
+ft_ssl
 # Prerequisites
 *.d
 
