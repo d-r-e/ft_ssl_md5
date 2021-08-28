@@ -38,7 +38,7 @@ m:	$(NAME)
 push: fclean
 	git add libft $(SRC) $(INC) Makefile
 	git commit -m "d-r-e"
-	git push
+	git push origin libft
 
 norm:
 	@norminette -v
