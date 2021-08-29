@@ -47,9 +47,10 @@ typedef struct s_ssl
 	int q;
 	int md5;
 	char	*str;
+	char	*msg;
 	char *input;
 	char *file;
-}	t_opt;
+}	t_ssl;
 
 typedef struct s_md5
 {
@@ -57,13 +58,18 @@ typedef struct s_md5
 	t_word b;
 	t_word c;
 	t_word d;
+	char *msg;
+	t_block *blocks;
+	uint64_t	len;
 }	t_md5;
 
-t_opt g_ssl;
+t_ssl g_ssl;
 
-int		ft_md5(const char *s);
+int		ft_append(char **buff, char c);
+int		ft_md5(t_ssl ssl);
 t_word	init_word(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
 t_word	init_word_int(int n);
 void	print_word(t_word w);
+void	print_block(t_block b);
 void	print_md5_hash(t_md5 md5);
 #endif

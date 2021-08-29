@@ -2,33 +2,62 @@
 
 void put_md5(const char *file, const char *hash)
 {
-    if (file)
-    {
-        ft_putstr("MD5(");
-        ft_putstr(file);
-        ft_putstr(")= ");
-    }
-    ft_puts(hash);
+	if (file)
+	{
+		ft_putstr("MD5(");
+		ft_putstr(file);
+		ft_putstr(")= ");
+	}
+	ft_puts(hash);
 }
 
 void init_md5_words(t_md5 *md5)
 {
-    md5->a = init_word_int(0x67452301);
-    md5->b = init_word(0x89, 0xab, 0xcd, 0xef);
-    md5->c = init_word(0xfe, 0xdc, 0xba, 0x98);
-    md5->d = init_word(0x76, 0x54, 0x32, 0x10);
+	ft_bzero(md5, sizeof(*md5));
+	//md5->blocks = NULL;
+	md5->a = init_word(0x01, 0x23, 0x45, 0x67);
+	md5->b = init_word(0x89, 0xab, 0xcd, 0xef);
+	md5->c = init_word(0xfe, 0xdc, 0xba, 0x98);
+	md5->d = init_word(0x76, 0x54, 0x32, 0x10);
 }
 
-int ft_md5(const char *s)
+static void set_msg(t_ssl *ssl, t_md5 *md5)
 {
-    char *padded = NULL;
-    t_md5 md5;
+	uint64_t	len;
+	uint64_t	flen;
+	int			nblocks;
 
-    init_md5_words(&md5);
-    padded = ft_strdup(s);
-    ft_putstr(padded);
-    if (padded)
-        free(padded);
-    print_md5_hash(md5); 
-    return(0);
+	len = ft_strlen(ssl->str);
+	flen = len + 1;
+	md5->msg = ft_strdup(ssl->str);
+	ft_append(&ssl->msg, 0x80);
+	while (flen % 64 != 56)
+	{
+		ft_append(&ssl->msg, '\0');
+		flen++;
+	}
+	printf("len: %llu, flen: %llu\n", len, flen);
+	nblocks = flen / 64 + 1;
+	md5->blocks = ft_calloc(nblocks, sizeof(t_block));
+	ft_memcpy(md5->blocks, md5->msg, len);
+	for (int i = 0; i < nblocks; ++i)
+	{
+		//print_block(md5->blocks[i]);
+		if (i == nblocks - 1)
+		{
+			ft_memcpy(md5->blocks[i].str, (void*)&flen, sizeof(flen));
+		}
+		print_block(md5->blocks[i]);
+	}
+	free(md5->msg);
+}
+
+int ft_md5(t_ssl ssl)
+{
+	t_md5 md5;
+
+	init_md5_words(&md5);
+	set_msg(&ssl, &md5);
+	print_md5_hash(md5);
+	return (0);
 }

@@ -21,15 +21,24 @@ void print_dword(uint8_t n)
 
 void print_word(t_word w)
 {
-
     print_dword(w.bit.b3);
-    //ft_putstr(" ");
+    // ft_putstr(" ");
     print_dword(w.bit.b2);
-    //ft_putstr(" ");
+    // ft_putstr(" ");
     print_dword(w.bit.b1);
-    //ft_putstr(" ");
+    // ft_putstr(" ");
     print_dword(w.bit.b0);
-    //ft_puts("");
+    // ft_putstr(" ");
+}
+
+void print_block(t_block b)
+{
+    for (int i = 0; i < 16; ++i)
+    {
+        print_word(b.words[15 - i]);
+        ft_putstr(" ");
+    }
+    ft_puts("");
 }
 
 void print_md5_hash(t_md5 md5)

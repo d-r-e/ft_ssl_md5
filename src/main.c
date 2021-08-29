@@ -1,6 +1,6 @@
 #include "../inc/ft_ssl.h"
 
-static int ft_append(char **buff, char c)
+int ft_append(char **buff, char c)
 {
 	char    *tmp;
 	int     len;
@@ -53,30 +53,30 @@ static void init_options(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-	char    *str;
 	char    c;
 	int		rd = 0;
 	int		(*command[])() = { ft_md5 };
+	uint64_t	len = 0;
 
 	init_options(argc, argv);
 	if (g_ssl.md5 && !g_ssl.s)
 	{
-		str = ft_strdup("");
+		g_ssl.str = ft_strdup("");
 		while (read(0, &c, 1))
 		{
+			len++;
 			rd = 1;
-			if (ft_append(&str, c))
+			if (ft_append(&g_ssl.str, c))
 			{
-				free(str);
+				free(g_ssl.str);
 				return (-1);
 			}
 		}
-		command[0](str);
-		free(str);
+		command[0](g_ssl);
+		free(g_ssl.str);
 	}
 	else if (argc > 1)
 		ft_putstr("error: invalid command\nStandard commands:\n\nMessage Digest Commands:\nmd5\nsha256\n");
-	
 	// t_word w = init_word(0xca,0xbb,0x11, 0);
 	// print_word(w);
 	// w = init_word(0,0,0,0);

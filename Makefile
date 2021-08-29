@@ -29,10 +29,17 @@ all: $(NAME)
 
 x: $(NAME)
 	./$(NAME)
-m:	$(NAME)
-	echo 42 | ./$(NAME) md5
+n:	$(NAME)
+	echo -n "" | ./$(NAME) md5
 
-commit: all fclean 
+long: $(NAME)
+	python3 -c "print('B'*(56+56+55), end='')" | ./$(NAME) md5
+	@echo
+	python3 -c "print('B'*(55), end='')" | ./$(NAME) md5
+	@echo
+	python3 -c "print('B'*(247), end='')" | ./$(NAME) md5
+
+commit: all long fclean 
 	@git add $(SRC) Makefile $(INC) .gitignore 
 	@git commit -am "auto commit by darodrig `date +%d-%m-%Y` from `uname -n | cut -d. -f1`"
 
