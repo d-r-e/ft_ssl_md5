@@ -53,16 +53,17 @@ static void init_options(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-	char    *str = NULL;
+	char    *str;
 	char    c;
+	int		rd = 0;
 
 	init_options(argc, argv);
-	(void)argv;
-	(void)argc;
-	if (argc < 2)
+	if (argc == 2 && !ft_strcmp(argv[1], "md5"))
 	{
+		str = ft_strdup("");
 		while (read(0, &c, 1))
 		{
+			rd = 1;
 			if (ft_append(&str, c))
 			{
 				free(str);
@@ -72,12 +73,14 @@ int main(int argc, char **argv)
 		ft_md5(str, NULL);
 		free(str);
 	}
-	t_word w = init_word(0xca,0xbb,0x11, 0);
-	print_word(w);
-	w = init_word(0,0,0,0);
-	print_word(w);
-	w = init_word_int(42);
-	print_word(w);
+	
+	
+	// t_word w = init_word(0xca,0xbb,0x11, 0);
+	// print_word(w);
+	// w = init_word(0,0,0,0);
+	// print_word(w);
+	// w = init_word_int(42);
+	// print_word(w);
 	// system("leaks ft_ssl");
 	return(0);
 }
