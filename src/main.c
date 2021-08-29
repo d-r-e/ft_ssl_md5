@@ -21,7 +21,7 @@ static int ft_append(char **buff, char c)
 
 static int usage(void)
 {
-	ft_puts("ft_md5: usage: ./ft_md5 [-spr] file");
+	ft_puts("ft_md5: usage: ./ft_md5 [md5/sha256] [-spr] [args]");
 	return (-1);
 }
 
@@ -56,9 +56,10 @@ int main(int argc, char **argv)
 	char    *str;
 	char    c;
 	int		rd = 0;
+	int		(*command[])() = { ft_md5 };
 
 	init_options(argc, argv);
-	if (argc == 2 && !ft_strcmp(argv[1], "md5"))
+	if (g_ssl.md5 && !g_ssl.s)
 	{
 		str = ft_strdup("");
 		while (read(0, &c, 1))
@@ -70,10 +71,11 @@ int main(int argc, char **argv)
 				return (-1);
 			}
 		}
-		ft_md5(str, NULL);
+		command[0](str);
 		free(str);
 	}
-	
+	else if (argc > 1)
+		ft_putstr("error: invalid command\nStandard commands:\n\nMessage Digest Commands:\nmd5\nsha256\n");
 	
 	// t_word w = init_word(0xca,0xbb,0x11, 0);
 	// print_word(w);

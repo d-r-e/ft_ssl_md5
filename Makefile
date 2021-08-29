@@ -32,10 +32,12 @@ x: $(NAME)
 m:	$(NAME)
 	echo 42 | ./$(NAME) md5
 
-push: fclean
-	git add libft $(SRC) $(INC) Makefile
-	git commit -m "d-r-e"
-	git push origin main
+commit: all fclean 
+	@git add $(SRC) Makefile $(INC) .gitignore 
+	@git commit -am "auto commit by darodrig `date +%d-%m-%Y` from `uname -n | cut -d. -f1`"
+
+push: commit
+	@git push origin main
 
 norm:
 	@norminette -v

@@ -31,6 +31,13 @@ typedef union s_word {
     } bit;
 } t_word;
 
+typedef union s_block
+{
+	char	str[64];
+	t_word	words[16];
+} t_block;
+
+typedef int (*command)(const char *s);
 
 typedef struct s_ssl
 {
@@ -40,19 +47,23 @@ typedef struct s_ssl
 	int q;
 	int md5;
 	char	*str;
-	t_word	a;
-	t_word	b;
-	t_word	c;
-	t_word	d;
 	char *input;
 	char *file;
 }	t_opt;
 
+typedef struct s_md5
+{
+	t_word a;
+	t_word b;
+	t_word c;
+	t_word d;
+}	t_md5;
+
 t_opt g_ssl;
 
-int ft_md5(const char *s, const char *file);
-t_word init_word(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
-t_word init_word_int(int n);
-void print_word(t_word w);
-
+int		ft_md5(const char *s);
+t_word	init_word(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
+t_word	init_word_int(int n);
+void	print_word(t_word w);
+void	print_md5_hash(t_md5 md5);
 #endif
