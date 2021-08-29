@@ -33,11 +33,11 @@ n:	$(NAME)
 	echo -n "" | ./$(NAME) md5
 
 long: $(NAME)
-	python3 -c "print('B'*(56+56+55), end='')" | ./$(NAME) md5
+	python3 -c "print('B'*(5), end='')" | ./$(NAME) md5
 	@echo
-	python3 -c "print('B'*(55), end='')" | ./$(NAME) md5
+	python3 -c "print('B'*(55+(64* 10)+1), end='')" | ./$(NAME) md5
 	@echo
-	python3 -c "print('B'*(247), end='')" | ./$(NAME) md5
+	python3 -c "print('B'*(0), end='')" | ./$(NAME) md5
 
 commit: all long fclean 
 	@git add $(SRC) Makefile $(INC) .gitignore 

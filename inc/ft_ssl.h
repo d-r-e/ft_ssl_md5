@@ -50,6 +50,7 @@ typedef struct s_ssl
 	char	*msg;
 	char *input;
 	char *file;
+	uint64_t len;
 }	t_ssl;
 
 typedef struct s_md5

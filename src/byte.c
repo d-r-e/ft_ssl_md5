@@ -35,7 +35,7 @@ void print_block(t_block b)
 {
     for (int i = 0; i < 16; ++i)
     {
-        print_word(b.words[15 - i]);
+        print_word(b.words[i]);
         ft_putstr(" ");
     }
     ft_puts("");

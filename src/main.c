@@ -72,6 +72,8 @@ int main(int argc, char **argv)
 				return (-1);
 			}
 		}
+		//printf("\"%s\"\n", g_ssl.str);
+		g_ssl.len = len;
 		command[0](g_ssl);
 		free(g_ssl.str);
 	}

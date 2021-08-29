@@ -23,31 +23,34 @@ void init_md5_words(t_md5 *md5)
 
 static void set_msg(t_ssl *ssl, t_md5 *md5)
 {
-	uint64_t	len;
 	uint64_t	flen;
 	int			nblocks;
 
-	len = ft_strlen(ssl->str);
-	flen = len + 1;
+	flen = ssl->len + 1;
 	md5->msg = ft_strdup(ssl->str);
-	ft_append(&ssl->msg, 0x80);
+	ft_append(&md5->msg, 0x80);
 	while (flen % 64 != 56)
 	{
-		ft_append(&ssl->msg, '\0');
+		ft_append(&md5->msg, '\0');
 		flen++;
 	}
-	printf("len: %llu, flen: %llu\n", len, flen);
+	printf("len: %llu, flen: %llu\n", ssl->len, flen);
 	nblocks = flen / 64 + 1;
 	md5->blocks = ft_calloc(nblocks, sizeof(t_block));
-	ft_memcpy(md5->blocks, md5->msg, len);
+	ft_memcpy(md5->blocks, md5->msg, flen);
 	for (int i = 0; i < nblocks; ++i)
 	{
-		//print_block(md5->blocks[i]);
+		//ft_bzero(&md5->blocks[i].str, 64);
 		if (i == nblocks - 1)
 		{
-			ft_memcpy(md5->blocks[i].str, (void*)&flen, sizeof(flen));
+			;
+			//ft_memcpy(md5->blocks[i].str, md5->msg + 64*i, 56);
+			ft_memcpy(md5->blocks[i].str + 60, (void*)&flen, sizeof(flen));
 		}
+		// else
+		// 	ft_memcpy(md5->blocks[i].str, md5->msg + 64*i, 64);
 		print_block(md5->blocks[i]);
+		//print_block(md5->blocks[i]);
 	}
 	free(md5->msg);
 }
