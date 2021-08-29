@@ -2,7 +2,7 @@
 ft_ssl
 # Prerequisites
 *.d
-
+*/*.o
 # Object files
 *.o
 *.ko

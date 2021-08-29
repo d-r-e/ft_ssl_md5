@@ -6,7 +6,7 @@ FLAGS= -O2 -Wall -Wextra -Werror -Wformat-security
 LIBFT=libft/libft.a
 INC=inc/$(NAME).h
 
-$(NAME): $(OBJ) $(LIBFT) 
+$(NAME): $(LIBFT) $(OBJ) 
 	gcc $(FLAGS) $(OBJ) -I libft -L libft -lft -o $(NAME)
 
 $(LIBFT):
@@ -35,7 +35,7 @@ m:	$(NAME)
 push: fclean
 	git add libft $(SRC) $(INC) Makefile
 	git commit -m "d-r-e"
-	git push
+	git push origin main
 
 norm:
 	@norminette -v
