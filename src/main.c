@@ -5,8 +5,11 @@ int ft_append(char **buff, char c)
 	char    *tmp;
 	int     len;
 
-	if (!*buff)
+	if (*buff == NULL)
+	{
+		ft_puts("nobuff");
 		*buff = ft_strdup("");
+	}
 	len = ft_strlen(*buff);
 	tmp = ft_calloc(1, (len + 2) * sizeof(char));
 	if (!tmp)
@@ -54,7 +57,6 @@ static void init_options(int argc, char **argv)
 int main(int argc, char **argv)
 {
 	char    c;
-	int		rd = 0;
 	int		(*command[])() = { ft_md5 };
 	uint64_t	len = 0;
 
@@ -65,7 +67,6 @@ int main(int argc, char **argv)
 		while (read(0, &c, 1))
 		{
 			len++;
-			rd = 1;
 			if (ft_append(&g_ssl.str, c))
 			{
 				free(g_ssl.str);

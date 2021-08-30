@@ -35,7 +35,7 @@ n:	$(NAME)
 long: $(NAME)
 	python3 -c "print('B'*(5), end='')" | ./$(NAME) md5
 	@echo
-	python3 -c "print('B'*(55+(64* 10)+1), end='')" | ./$(NAME) md5
+	python3 -c "print('B'*(55+(64* 3)), end='')" | ./$(NAME) md5
 	@echo
 	python3 -c "print('B'*(0), end='')" | ./$(NAME) md5
 
