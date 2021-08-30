@@ -21,6 +21,7 @@
 # include <stdint.h>
 # include "../libft/libft.h"
 
+
 typedef union s_word {
     uint32_t i;
     struct {
@@ -38,6 +39,7 @@ typedef union s_block
 } t_block;
 
 typedef int (*command)(const char *s);
+
 
 typedef struct s_ssl
 {
@@ -61,6 +63,7 @@ typedef struct s_md5
 	t_word d;
 	char *msg;
 	t_block *blocks;
+	int	nblocks;
 	uint64_t	len;
 }	t_md5;
 

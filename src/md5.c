@@ -1,37 +1,58 @@
 #include "../inc/ft_ssl.h"
 
-t_word f_function(t_word b, t_word c, t_word d)
+static uint32_t k[] = {
+        0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
+        0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
+        0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
+        0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
+        0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa,
+        0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
+        0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed,
+        0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a,
+        0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c,
+        0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70,
+        0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05,
+        0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665,
+        0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
+        0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
+        0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
+        0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
+	};
+static t_word f_function(t_word b, t_word c, t_word d)
 {
 	t_word f;
 
 	f.i = ( b.i & c.i ) | ( (!b.i) & d.i );
+	ft_puts("a");
 	return (f);
 }
 
-t_word g_function(t_word b, t_word c, t_word d)
+static t_word g_function(t_word b, t_word c, t_word d)
 {
 	t_word f;
 
 	f.i = ( b.i & d.i ) | ( c.i & (!d.i) );
+		ft_puts("b");
 	return (f);
 }
 
-t_word h_function(t_word b, t_word c, t_word d)
+static t_word h_function(t_word b, t_word c, t_word d)
 {
 	t_word f;
 
+ft_puts("c");
 	f.i = ( b.i ^ c.i ^ d.i );
 	return (f);
 }
 
-t_word i_function(t_word b, t_word c, t_word d)
+static t_word i_function(t_word b, t_word c, t_word d)
 {
 	t_word f;
 
+ft_puts("d");
 	f.i = b.i ^ ( c.i | (!d.i) );
 	return (f);
 }
-
 
 void put_md5(const char *file, const char *hash)
 {
@@ -44,7 +65,7 @@ void put_md5(const char *file, const char *hash)
 	ft_puts(hash);
 }
 
-void init_md5_words(t_md5 *md5)
+void init_words(t_md5 *md5)
 {
 	ft_bzero(md5, sizeof(*md5));
 	//md5->blocks = NULL;
@@ -57,7 +78,6 @@ void init_md5_words(t_md5 *md5)
 static void set_msg(t_ssl *ssl, t_md5 *md5)
 {
 	uint64_t	flen;
-	int			nblocks;
 	char		appendix = 0x80;
 
 	uint64_t fflen = (((((ssl->len + 8) / 64) + 1) * 64) - 8);
@@ -73,15 +93,15 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 	}
 	// if (flen != fflen)
 	// 	printf("maaal\n");
-	nblocks = (flen / 64) + 1;
-	md5->blocks = (t_block*)malloc(nblocks * (sizeof (t_block)));
-	printf("len: %llu, flen: %llu, nblocks: %d, fflen: %llu\n", ssl->len, flen, nblocks, fflen);
-	ft_bzero(md5->blocks, sizeof(t_block) * nblocks);
+	md5->nblocks = (flen / 64) + 1;
+	md5->blocks = (t_block*)malloc(md5->nblocks * (sizeof (t_block)));
+	printf("len: %llu, flen: %llu, md5->nblocks: %d, fflen: %llu\n", ssl->len, flen, md5->nblocks, fflen);
+	ft_bzero(md5->blocks, sizeof(t_block) * md5->nblocks);
 	//ft_memcpy(md5->blocks, md5->msg, ssl->len);
-	for (int i = 0; i < nblocks; i++)
+	for (int i = 0; i < md5->nblocks; i++)
 	{
 		ft_bzero(md5->blocks[i].str, 64);
-		if (i == (nblocks - 1))
+		if (i == (md5->nblocks - 1))
 		{
 
 			int len = ssl->len < 56 ? ssl->len : 56;
@@ -98,15 +118,60 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 		print_block(md5->blocks[i]);
 		//print_block(md5->blocks[i]);
 	}
-	free(md5->msg);
+}
+
+void md5_loop(t_md5 *md5)
+{
+	t_word (*fn[]) (t_word,t_word,t_word) = {f_function, g_function, h_function, i_function};
+	t_word (*curr)(t_word,t_word,t_word);
+	t_word a2, b2, c2, d2;
+	int g;
+
+	for (int i = 0; i < md5->nblocks; i++)
+	{
+		switch (i % 4)
+		{
+			case 0:
+				g = i;
+				break;
+			case 1:
+				g = (5 * i + 1) % 16;
+				break;
+			case 2:
+				g = (3 * i * 5) % 16;
+				break;
+			case 3:
+				g = (7 * i) % 16;
+				break;
+			default:
+				break;
+		}
+		// g = 0;
+		curr = fn[i % 4];
+		md5->a.i = (md5->a.i + g + curr(md5->b, md5->c, md5->d).i ) % 4294967296;
+		a2 = md5->d;
+		b2 = md5->a;
+		c2 = md5->b;
+		d2 = md5->c;
+		md5->a = a2;
+		md5->b = b2;
+		md5->c = c2;
+		md5->d = d2;
+		print_md5_hash(*md5);
+	}
 }
 
 int ft_md5(t_ssl ssl)
 {
 	t_md5 md5;
 
-	init_md5_words(&md5);
+
+	(void)put_md5;
+	(void)k;
+	init_words(&md5);
 	set_msg(&ssl, &md5);
+	md5_loop(&md5);
+	free(md5.msg);
 	print_md5_hash(md5);
 	return (0);
 }
