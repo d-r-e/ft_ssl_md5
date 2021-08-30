@@ -47,8 +47,8 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 		//ft_bzero(&md5->blocks[i].str, 64);
 		if (i == nblocks - 1)
 		{
-			;
-			// //ft_memcpy(md5->blocks[i].str, md5->msg + 64*i, 56);
+			int len = ssl->len < 56 ? ssl->len : 56;
+			ft_memcpy(md5->blocks[i].str, md5->msg + 64*i, len);
 			ft_memcpy(md5->blocks[i].str + 56, (void*)&flen, sizeof(flen));
 		}
 		// else
