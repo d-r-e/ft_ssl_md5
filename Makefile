@@ -35,9 +35,11 @@ n:	$(NAME)
 long: $(NAME)
 	python3 -c "print('B'*(5), end='')" | ./$(NAME) md5
 	@echo
-	python3 -c "print('B'*(55+(64* 3)), end='')" | ./$(NAME) md5
+	@python3 -c "print('B'*(55+(64)), end='')" | ./$(NAME) md5
 	@echo
-	python3 -c "print('B'*(0), end='')" | ./$(NAME) md5
+	@python3 -c "print('B'*(55+ 64 + 1), end='')" | ./$(NAME) md5
+	@echo
+	@python3 -c "print('B'*(55 + 64 + 2), end='')" | ./$(NAME) md5
 
 commit: all long fclean 
 	@git add $(SRC) Makefile $(INC) .gitignore 

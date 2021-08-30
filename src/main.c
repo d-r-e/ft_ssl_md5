@@ -22,6 +22,20 @@ int ft_append(char **buff, char c)
 	return (0);
 }
 
+int ft_append_at(char **buff, char c, unsigned int pos)
+{
+	char    *tmp;
+
+	tmp = (char*)malloc((pos + 1));
+	if (!tmp)
+		return (-1);
+	ft_memcpy(tmp, *buff, pos);
+	tmp[pos] = c;
+	free(*buff);
+	*buff = tmp;
+	return (0);
+}
+
 static int usage(void)
 {
 	ft_puts("ft_md5: usage: ./ft_md5 [md5/sha256] [-spr] [args]");

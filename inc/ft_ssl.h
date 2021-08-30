@@ -67,6 +67,7 @@ typedef struct s_md5
 t_ssl g_ssl;
 
 int		ft_append(char **buff, char c);
+int		ft_append_at(char **buff, char c, unsigned int pos);
 int		ft_md5(t_ssl ssl);
 t_word	init_word(uint8_t a, uint8_t b, uint8_t c, uint8_t d);
 t_word	init_word_int(int n);

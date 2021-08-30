@@ -21,13 +21,13 @@ void print_dword(uint8_t n)
 
 void print_word(t_word w)
 {
-    print_dword(w.bit.b3);
-    // ft_putstr(" ");
-    print_dword(w.bit.b2);
+    print_dword(w.bit.b0);
     // ft_putstr(" ");
     print_dword(w.bit.b1);
     // ft_putstr(" ");
-    print_dword(w.bit.b0);
+    print_dword(w.bit.b2);
+    // ft_putstr(" ");
+    print_dword(w.bit.b3);
     // ft_putstr(" ");
 }
 
