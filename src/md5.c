@@ -18,6 +18,12 @@ static uint32_t k[] = {
         0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
         0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 	};
+
+uint32_t s[] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+                    5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
+                    4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+                    6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
+
 static t_word f_function(t_word b, t_word c, t_word d)
 {
 	t_word f;
@@ -95,7 +101,7 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 	// 	printf("maaal\n");
 	md5->nblocks = (flen / 64) + 1;
 	md5->blocks = (t_block*)malloc(md5->nblocks * (sizeof (t_block)));
-	printf("len: %llu, flen: %llu, md5->nblocks: %d, fflen: %llu\n", ssl->len, flen, md5->nblocks, fflen);
+	printf("len: %lu, flen: %lu, md5->nblocks: %d, fflen: %lu\n", ssl->len, flen, md5->nblocks, fflen);
 	ft_bzero(md5->blocks, sizeof(t_block) * md5->nblocks);
 	//ft_memcpy(md5->blocks, md5->msg, ssl->len);
 	for (int i = 0; i < md5->nblocks; i++)
