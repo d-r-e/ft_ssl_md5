@@ -89,9 +89,14 @@ int main(int argc, char **argv)
 		}
 		//printf("\"%s\"\n", g_ssl.str);
 		g_ssl.len = len;
-		//printf("mylen:%llu strlen: %lu\n",len, strlen(g_ssl.str));
 		command[0](g_ssl);
 		free(g_ssl.str);
+	}
+	else if (g_ssl.md5 && g_ssl.s)
+	{
+		g_ssl.str = g_ssl.input;
+		g_ssl.len = ft_strlen(g_ssl.str);
+		command[0](g_ssl);
 	}
 	else if (argc > 1)
 		ft_putstr("error: invalid command\nStandard commands:\n\nMessage Digest Commands:\nmd5\nsha256\n");
