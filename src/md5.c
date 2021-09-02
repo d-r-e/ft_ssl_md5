@@ -91,7 +91,7 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 	uint64_t flen;
 
 	flen = (((((ssl->len + 8) / 64) + 1) * 64) - 8);
-	md5->msg = ft_calloc(1, flen + 8);
+	md5->msg = ft_calloc(1, flen + 64);
 	
 	ft_memcpy(md5->msg, ssl->str, ssl->len);
 	md5->msg[ssl->len] = 0x80;
