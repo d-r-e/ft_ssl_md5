@@ -20,9 +20,9 @@ static uint32_t k[] = {
 	};
 
 uint32_t s[] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
-                    5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
-                    4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
-                    6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
+				5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
+				4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+				6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
 
 // static t_word f_function(t_word b, t_word c, t_word d)
 // {
@@ -106,21 +106,16 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 	md5->blocks = (t_block*)malloc(md5->nblocks * (sizeof (t_block)));
 	printf("len: %llu, flen: %llu, md5->nblocks: %d, fflen: %llu\n", ssl->len, flen, md5->nblocks, flen);
 	ft_bzero(md5->blocks, sizeof(t_block) * md5->nblocks);
-	//ft_memcpy(md5->blocks, md5->msg, ssl->len);
+	uint32_t len_in_bits = ssl->len * 8;
+	ft_memcpy(md5->msg + flen, &len_in_bits, 4);
 	for (uint32_t i = 0; i < md5->nblocks; i++)
 	{
 		ft_bzero(md5->blocks[i].str, 64);
-		if (i == (md5->nblocks - 1))
-		{
-
-			int len = ssl->len < 56 ? ssl->len : 56;
-			ft_memcpy(md5->blocks[i].str, &md5->msg[64 * i], len);
-			ft_memcpy(md5->blocks[i].str + 56, (void*)&flen, sizeof(flen));
-		}
-		else
-		{
-		 	ft_memcpy(md5->blocks[i].str, &md5->msg[64 * i], 64);
-		}
+		ft_memcpy(md5->blocks[i].str, md5->msg + (64 * i), 64);
+		// else
+		// {
+		//  	ft_memcpy(md5->blocks[i].str, &md5->msg[64 * i], 64);
+		// }
 		// for (int i = 0; i < 64; i++)
 		// 	printf("%.2x", md5->blocks[i].str[i]);
 		// ft_puts("");
@@ -133,18 +128,20 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 void md5_loop(t_md5 *md5)
 {
 	uint32_t *word;
-	uint32_t a, b, c, d;
+	uint32_t a, b, c, d = 0;
 	uint32_t f, g;
 	uint32_t i, temp;
 
 	for (uint64_t offset = 0; offset < md5->flen; offset += 64)
 	{
 		word = (uint32_t *)md5->msg + offset;
+
+		printf("offset: %lld %llx\n", offset, offset);
 		a = md5->a.i;
 		b = md5->b.i;
 		c = md5->c.i;
 		d = md5->d.i;
-		for(i = 0; i < 64; ++i)
+		for(i = 0; i < 64; i++)
 		{
 			if (i < 16)
             {
@@ -154,32 +151,39 @@ void md5_loop(t_md5 *md5)
             else if (i < 32)
             {
                 f = (d & b) | ((~d) & (c));
-                g = (5 * i + 1) % 16;
+                g = ((5 * i) + 1) % 16;
             }
             else if (i < 48)
             {
                 f = b ^ c ^ d;
-                g = (3 * i + 5) % 16;
+                g = ((3 * i) + 5) % 16;
             }
             else
             {
                 f = c ^ (b | (~d));
                 g = (7 * i) % 16;
             }
+			printf("i: %u\n", i);
 			printf("f=%x g=%d w[g]=%x\n", f, g, word[g]);
+			printf("");
 			temp = d;
 			d = c;
 			c = b;
+			printf("rotateLeft(%x + %x + %x + %x, %d)\n", a, f, k[i], word[g], s[i]);
 			b = b + shift((a + f + k[i] + word[g]), s[i]);
 			a = temp;
-			print_md5_hash(*md5);
+			
 		}
+		ft_puts("");
 		md5->a.i += a;
 		md5->b.i += b;
 		md5->c.i += c;
 		md5->d.i += d;
+		print_md5_hash(*md5);
 		printf("offset: %llu\n", offset);
 	}
+
+	free(md5->msg);
 }
 
 int ft_md5(t_ssl ssl)
@@ -192,7 +196,6 @@ int ft_md5(t_ssl ssl)
 	init_words(&md5);
 	set_msg(&ssl, &md5);
 	md5_loop(&md5);
-	free(md5.msg);
 	print_md5_hash(md5);
 	return (0);
 }
