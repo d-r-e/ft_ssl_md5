@@ -24,40 +24,45 @@ uint32_t s[] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
                     4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
                     6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
 
-static t_word f_function(t_word b, t_word c, t_word d)
+// static t_word f_function(t_word b, t_word c, t_word d)
+// {
+// 	t_word f;
+
+// 	f.i = ( b.i & c.i ) | ( (!b.i) & d.i );
+// 	ft_puts("a");
+// 	return (f);
+// }
+
+// static t_word g_function(t_word b, t_word c, t_word d)
+// {
+// 	t_word f;
+
+// 	f.i = ( b.i & d.i ) | ( c.i & (!d.i) );
+// 		ft_puts("b");
+// 	return (f);
+// }
+
+// static t_word h_function(t_word b, t_word c, t_word d)
+// {
+// 	t_word f;
+
+// ft_puts("c");
+// 	f.i = ( b.i ^ c.i ^ d.i );
+// 	return (f);
+// }
+
+// static t_word i_function(t_word b, t_word c, t_word d)
+// {
+// 	t_word f;
+
+// ft_puts("d");
+// 	f.i = b.i ^ ( c.i | (!d.i) );
+// 	return (f);
+// }
+
+static uint32_t shift(uint32_t x, uint32_t s)
 {
-	t_word f;
-
-	f.i = ( b.i & c.i ) | ( (!b.i) & d.i );
-	ft_puts("a");
-	return (f);
-}
-
-static t_word g_function(t_word b, t_word c, t_word d)
-{
-	t_word f;
-
-	f.i = ( b.i & d.i ) | ( c.i & (!d.i) );
-		ft_puts("b");
-	return (f);
-}
-
-static t_word h_function(t_word b, t_word c, t_word d)
-{
-	t_word f;
-
-ft_puts("c");
-	f.i = ( b.i ^ c.i ^ d.i );
-	return (f);
-}
-
-static t_word i_function(t_word b, t_word c, t_word d)
-{
-	t_word f;
-
-ft_puts("d");
-	f.i = b.i ^ ( c.i | (!d.i) );
-	return (f);
+	return (((x) << (s)) | ((x) >> (32 - (s))));
 }
 
 void put_md5(const char *file, const char *hash)
@@ -83,15 +88,13 @@ void init_words(t_md5 *md5)
 
 static void set_msg(t_ssl *ssl, t_md5 *md5)
 {
-	uint64_t	flen;
-	char		appendix = 0x80;
+	uint64_t flen;
 
-	uint64_t fflen = (((((ssl->len + 8) / 64) + 1) * 64) - 8);
-	flen = ssl->len + 1;
-	md5->msg = malloc(fflen);
-	ft_bzero(md5->msg, fflen);
+	flen = (((((ssl->len + 8) / 64) + 1) * 64) - 8);
+	md5->msg = malloc(flen);
+	ft_bzero(md5->msg, flen);
 	md5->msg = ft_memcpy(md5->msg, ssl->str, ssl->len);
-	md5->msg[ssl->len] = appendix;
+	md5->msg[ssl->len] = 0x80;
 	while (flen % 64 != 56)
 	{
 		ft_append_at(&md5->msg, '\0', flen);
@@ -101,10 +104,10 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 	// 	printf("maaal\n");
 	md5->nblocks = (flen / 64) + 1;
 	md5->blocks = (t_block*)malloc(md5->nblocks * (sizeof (t_block)));
-	printf("len: %lu, flen: %lu, md5->nblocks: %d, fflen: %lu\n", ssl->len, flen, md5->nblocks, fflen);
+	printf("len: %llu, flen: %llu, md5->nblocks: %d, fflen: %llu\n", ssl->len, flen, md5->nblocks, flen);
 	ft_bzero(md5->blocks, sizeof(t_block) * md5->nblocks);
 	//ft_memcpy(md5->blocks, md5->msg, ssl->len);
-	for (int i = 0; i < md5->nblocks; i++)
+	for (uint32_t i = 0; i < md5->nblocks; i++)
 	{
 		ft_bzero(md5->blocks[i].str, 64);
 		if (i == (md5->nblocks - 1))
@@ -124,46 +127,58 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 		print_block(md5->blocks[i]);
 		//print_block(md5->blocks[i]);
 	}
+	md5->flen = flen;
 }
 
 void md5_loop(t_md5 *md5)
 {
-	t_word (*fn[]) (t_word,t_word,t_word) = {f_function, g_function, h_function, i_function};
-	t_word (*curr)(t_word,t_word,t_word);
-	t_word a2, b2, c2, d2;
-	int g;
+	uint32_t *word;
+	uint32_t a, b, c, d;
+	uint32_t f, g;
+	uint32_t i, temp;
 
-	for (int i = 0; i < md5->nblocks; i++)
+	for (uint64_t offset = 0; offset < md5->flen; offset += 64)
 	{
-		switch (i % 4)
+		word = (uint32_t *)md5->msg + offset;
+		a = md5->a.i;
+		b = md5->b.i;
+		c = md5->c.i;
+		d = md5->d.i;
+		for(i = 0; i < 64; ++i)
 		{
-			case 0:
-				g = i;
-				break;
-			case 1:
-				g = (5 * i + 1) % 16;
-				break;
-			case 2:
-				g = (3 * i * 5) % 16;
-				break;
-			case 3:
-				g = (7 * i) % 16;
-				break;
-			default:
-				break;
+			if (i < 16)
+            {
+                f = (b & c) | ((~b) & (d));
+                g = i;
+            }
+            else if (i < 32)
+            {
+                f = (d & b) | ((~d) & (c));
+                g = (5 * i + 1) % 16;
+            }
+            else if (i < 48)
+            {
+                f = b ^ c ^ d;
+                g = (3 * i + 5) % 16;
+            }
+            else
+            {
+                f = c ^ (b | (~d));
+                g = (7 * i) % 16;
+            }
+			printf("f=%x g=%d w[g]=%x\n", f, g, word[g]);
+			temp = d;
+			d = c;
+			c = b;
+			b = b + shift((a + f + k[i] + word[g]), s[i]);
+			a = temp;
+			print_md5_hash(*md5);
 		}
-		// g = 0;
-		curr = fn[i % 4];
-		md5->a.i = (md5->a.i + g + curr(md5->b, md5->c, md5->d).i ) % 4294967296;
-		a2 = md5->d;
-		b2 = md5->a;
-		c2 = md5->b;
-		d2 = md5->c;
-		md5->a = a2;
-		md5->b = b2;
-		md5->c = c2;
-		md5->d = d2;
-		print_md5_hash(*md5);
+		md5->a.i += a;
+		md5->b.i += b;
+		md5->c.i += c;
+		md5->d.i += d;
+		printf("offset: %llu\n", offset);
 	}
 }
 
