@@ -107,7 +107,7 @@ static void set_msg(t_ssl *ssl, t_md5 *md5)
 	printf("len: %llu, flen: %llu, md5->nblocks: %d, fflen: %llu\n", ssl->len, flen, md5->nblocks, flen);
 	ft_bzero(md5->blocks, sizeof(t_block) * md5->nblocks);
 	uint32_t len_in_bits = ssl->len * 8;
-	ft_memcpy(md5->msg + flen, &len_in_bits, 4);
+	ft_memcpy(md5->msg + flen, &len_in_bits, sizeof(len_in_bits));
 	for (uint32_t i = 0; i < md5->nblocks; i++)
 	{
 		ft_bzero(md5->blocks[i].str, 64);
