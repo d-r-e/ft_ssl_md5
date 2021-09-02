@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 		}
 		//printf("\"%s\"\n", g_ssl.str);
 		g_ssl.len = len;
-		printf("mylen:%llu strlen: %lu\n",len, strlen(g_ssl.str));
+		//printf("mylen:%llu strlen: %lu\n",len, strlen(g_ssl.str));
 		command[0](g_ssl);
 		free(g_ssl.str);
 	}
