@@ -2,6 +2,7 @@
     "files.associations": {
         "libft.h": "c",
         "chrono": "c",
-        "unordered_map": "c"
+        "unordered_map": "c",
+        "cstdio": "cpp"
     }
 }

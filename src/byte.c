@@ -15,8 +15,9 @@ t_word init_word_int(int n)
 void print_dword(uint8_t n)
 {
     char base[16]  ="0123456789abcdef";
-    ft_putchar_fd(base[n / 16], 1);
-    ft_putchar_fd(base[n % 16], 1);
+
+    printf("%c", base[n / 16]);
+    printf("%c", base[n % 16]);
 }
 
 void print_word(t_word w)
@@ -38,7 +39,7 @@ void print_block(t_block b)
         print_word(b.words[i]);
         ft_putstr(" ");
     }
-    ft_puts("");
+    printf("\n");
 }
 
 void print_md5_hash(t_md5 md5)
@@ -47,5 +48,5 @@ void print_md5_hash(t_md5 md5)
     print_word(md5.b);
     print_word(md5.c);
     print_word(md5.d);
-    ft_puts("");
+    printf("\n");
 }

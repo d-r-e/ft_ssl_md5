@@ -47,6 +47,8 @@ static void init_options(int argc, char **argv)
 	ft_bzero(&g_ssl, sizeof(g_ssl));
 	if (argc > 1 && !ft_strcmp("md5", argv[1]))
 		g_ssl.md5 = 1;
+	else if (argc > 1 && !ft_strcmp("sha256", argv[1]))
+		g_ssl.sha256 = 1;
 	else
 		exit(usage());
 	for (int i = 2; i < argc; ++i)
@@ -77,7 +79,8 @@ static void print_algo(void)
 		printf("MD5(\"");
 	else if (g_ssl.sha256)
 		printf("SHA256(");
-	printf("\")\n");
+	printf("%s", g_ssl.str);
+	printf("\") = ");
 }
 
 int main(int argc, char **argv)
