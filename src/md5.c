@@ -128,7 +128,7 @@ void md5_loop(t_md5 *md5)
 	uint32_t *word;
 	uint32_t a, b, c, d = 0;
 	uint32_t f, g;
-	uint32_t i, temp;
+	uint32_t i, tmp;
 
 
 	for (uint64_t offset = 0; offset < md5->flen; offset += 64)
@@ -165,12 +165,12 @@ void md5_loop(t_md5 *md5)
 			// printf("i: %u\n", i);
 			// printf("f=%x g=%d w[g]=%x\n", f, g, word[g]);
 			// printf("");
-			temp = d;
+			tmp = d;
 			d = c;
 			c = b;
 			//printf("rotateLeft(%x + %x + %x + %x, %d)\n", a, f, k[i], word[g], s[i]);
 			b = b + shift((a + f + k[i] + word[g]), s[i]);
-			a = temp;
+			a = tmp;
 			
 		}
 		//ft_puts("");

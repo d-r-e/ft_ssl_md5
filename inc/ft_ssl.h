@@ -48,6 +48,7 @@ typedef struct s_ssl
 	int s;
 	int q;
 	int md5;
+	int sha256;
 	char *str;
 	char *msg;
 	char *input;

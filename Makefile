@@ -47,3 +47,4 @@ push: commit
 norm:
 	@norminette -v
 	norminette $(SRC) $(INC)
+.PHONY: re clean fclean all

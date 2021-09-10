@@ -68,6 +68,18 @@ static void init_options(int argc, char **argv)
 	}
 }
 
+static void print_algo(void)
+{
+	if (g_ssl.q)
+		return;
+
+	if (g_ssl.md5)
+		printf("MD5(\"");
+	else if (g_ssl.sha256)
+		printf("SHA256(");
+	printf("\")\n");
+}
+
 int main(int argc, char **argv)
 {
 	char    c;
@@ -89,6 +101,7 @@ int main(int argc, char **argv)
 		}
 		//printf("\"%s\"\n", g_ssl.str);
 		g_ssl.len = len;
+		print_algo();
 		command[0](g_ssl);
 		free(g_ssl.str);
 	}
@@ -96,7 +109,12 @@ int main(int argc, char **argv)
 	{
 		g_ssl.str = g_ssl.input;
 		g_ssl.len = ft_strlen(g_ssl.str);
+		print_algo();
 		command[0](g_ssl);
+	}
+	else if (g_ssl.md5 && !g_ssl.s)
+	{
+		;
 	}
 	else if (argc > 1)
 		ft_putstr("error: invalid command\nStandard commands:\n\nMessage Digest Commands:\nmd5\nsha256\n");
