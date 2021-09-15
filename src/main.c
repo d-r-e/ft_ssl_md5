@@ -121,12 +121,8 @@ int main(int argc, char **argv)
 	}
 	else if (argc > 1)
 		ft_putstr("error: invalid command\nStandard commands:\n\nMessage Digest Commands:\nmd5\nsha256\n");
-	// t_word w = init_word(0xca,0xbb,0x11, 0);
-	// print_word(w);
-	// w = init_word(0,0,0,0);
-	// print_word(w);
-	// w = init_word_int(42);
-	// print_word(w);
+	
+
 	// system("leaks ft_ssl");
 	return(0);
 }
