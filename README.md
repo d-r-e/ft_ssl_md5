@@ -3,7 +3,7 @@
 ## An introduction to cryptographic hashing algorithms
 
 ```
-David Rodríguez Elipe
+D. R.
 darodrig @ 42madrid.com
 ```
 _Summary: This project is the gateway to the encryption branch. You will recode part of
