@@ -1,19 +1,26 @@
-NAME=ft_ssl
-SRC = ./src/main.c 
+NAME = ft_ssl
+SRC = ./src/main.c ./src/help.c
+INCLUDE = ./inc/ft_ssl.h
+CC = gcc
+CFLAGS = -Wall -g -O2 -Wextra -Werror -Wformat-security
+INC = -I./inc
 
-CC=gcc
-CFLAGS=-Wall -g -O2 -Wextra -Werror -Wformat-security
-
-INC=-I./inc
-
-all: $(NAME)
+ifeq ($(shell uname), Linux)
+    NPROC := $(shell nproc)
+else ifeq ($(shell uname), Darwin)
+    NPROC := $(shell sysctl -n hw.ncpu)
+else
+    NPROC := 1
+endif
 
 OBJ = $(SRC:.c=.o)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(INC) -o $(NAME) $(OBJ)
 
-%.o: %.c
+all: $(NAME)
+
+%.o: %.c $(INCLUDE)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 clean:
@@ -24,5 +31,6 @@ fclean: clean
 
 re: fclean all
 
+.PHONY: clean fclean re all
 
-.PHONY: clean re all make fclean
+MAKEFLAGS += -j$(NPROC)
