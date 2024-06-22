@@ -1,5 +1,5 @@
 # ft_ssl [md5] [sha256]
-# WORK IN PROGRESS
+
 ## An introduction to cryptographic hashing algorithms
 
 ```
