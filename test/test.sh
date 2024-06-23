@@ -35,6 +35,16 @@ function check_output {
     fi
 }
 
+function check_valgrind {
+    local command="$1"
+    valgrind --leak-check=full --error-exitcode=1 $command &> /dev/null
+    if [[ $? -eq 0 ]]; then
+        echo_green "[OK] No memory leaks detected in: $command"
+    else
+        echo_red "[FAIL] Memory leaks detected in: $command"
+    fi
+}
+
 # Tests with expected output
 check_output 'echo -n "42 is nice" | ./ft_ssl md5' "(stdin)= 35f1d6de0302e2086a4e472266efb3a9"
 check_output 'echo "42 is nice" | ./ft_ssl md5 -p' '("42 is nice")= 35f1d6de0302e2086a4e472266efb3a9'
@@ -78,6 +88,11 @@ echo "another edge case" > edge_case_file
 check_output './ft_ssl md5 edge_case_file' 'MD5 (edge_case_file) = d73a5bbbd40ef1c05c0b5a59f91fccc1'
 check_output './ft_ssl md5 -s ""' 'MD5 ("") = d41d8cd98f00b204e9800998ecf8427e'
 check_output 'echo -n "" | ./ft_ssl md5' '(stdin)= d41d8cd98f00b204e9800998ecf8427e'
+
+check_valgrind "./ft_ssl md5"
+check_valgrind "./ft_ssl md5 -s 'test'"
+check_valgrind "./ft_ssl md5 file"
+check_valgrind "./ft_ssl md5 edge_case_file"
 
 # Clean up
 rm -f file edge_case_file

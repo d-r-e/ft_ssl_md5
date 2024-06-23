@@ -14,20 +14,29 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
                 return 0;
             }
             t_buffer *new_buffer = malloc(sizeof(t_buffer));
+            if (!new_buffer) {
+                perror("malloc");
+                return 0;
+            }
             new_buffer->buffer = argv[i + 1];
+            new_buffer->filename = NULL;
             new_buffer->next = *string_buffers;
             *string_buffers = new_buffer;
             i++;
         } else {
             if (argv[i][0] == '-') {
-                printf("ft_ssl: md5: illegal option -- %s\n", argv[i] + 1);
+                printf("%s: %s: illegal option -- %c\n",argv[0],argv[1], argv[i][1]);
+                return 0;
             } else {
                 t_buffer *new_buffer = malloc(sizeof(t_buffer));
+                if (!new_buffer) {
+                    perror("malloc");
+                    return 0;
+                }
                 new_buffer->filename = argv[i];
+                new_buffer->buffer = NULL;
                 new_buffer->next = *string_buffers;
                 *string_buffers = new_buffer;
-                i++;
-
             }
         }
     }
@@ -43,11 +52,13 @@ static void clear_list(t_buffer *list) {
     }
 }
 
-
 void md5(int argc, const char **argv) {
     t_md5_flags flags = {false, false, false};
     t_buffer *string_buffers = NULL;
-    (void)parse_flags(argc, argv, &flags, &string_buffers);
+    if (!parse_flags(argc, argv, &flags, &string_buffers)) {
+        clear_list(string_buffers);
+        return;
+    }
 
 #ifdef DEBUG
     t_buffer *ptr;
@@ -65,7 +76,5 @@ void md5(int argc, const char **argv) {
     }
 #endif
 
-
     clear_list(string_buffers);
 }
-
