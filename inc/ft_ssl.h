@@ -2,19 +2,45 @@
 # define FT_SSL_H
 
 # include <unistd.h>
-# include <stdio.h>
+# include <string.h>
 # include <stdint.h>
+# include <stdio.h>
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdlib.h>
 
-typedef struct s_command {
-    const char  *name;
-    void        (*func)();
-} t_command;
+# define DEBUG 1
 
-typedef struct md5_state {
-    uint32_t buffer[64];
-} t_md5_block;
+typedef struct s_command
+{
+	const char	*name;
+	void		(*func)(int, const char**);
+}	t_command;
+
+typedef struct s_md5_flags
+{
+	bool		p;
+	bool		q;
+	bool		r;
+}	t_md5_flags;
+
+typedef struct s_buffer{
+    const char *buffer;
+    const char *filename;
+    struct s_buffer *next;
+}   t_buffer;
 
 
-void usage(const char **argv);
+
+typedef struct md5_state
+{
+	uint32_t	buffer[64];
+}	t_md5_block;
+
+int		ft_strcmp(const char *s1, const char *s2);
+size_t ft_strlen(const char *s);
+void	ft_memset(void *b, int c, size_t len);
+void	usage(const char **argv);
+void	md5(int argc, const char **argv);
 
 #endif
