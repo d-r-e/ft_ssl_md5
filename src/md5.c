@@ -97,7 +97,7 @@ void md5(int argc, const char **argv) {
         clear_list(string_buffers);
         return;
     }
-    md5stdin(flags);
+    if (flags.p) md5stdin(flags);
     ptr = string_buffers;
 //#ifdef DEBUG
 //    printf("Flag -p: %s, Flag -q: %s, Flag -r: %s\n",
