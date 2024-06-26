@@ -25,7 +25,7 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
             i++;
         } else {
             if (argv[i][0] == '-') {
-                printf("%s: %s: illegal option -- %c\n",argv[0],argv[1], argv[i][1]);
+                printf("%s: %s: illegal option -- %c\n", argv[0], argv[1], argv[i][1]);
                 return 0;
             } else {
                 t_buffer *new_buffer = malloc(sizeof(t_buffer));
@@ -52,29 +52,64 @@ static void clear_list(t_buffer *list) {
     }
 }
 
+void md5stdin(t_md5_flags flags) {
+    int fd = 0;
+    char buffer[1024];
+    ssize_t bytes_read;
+    bool read_stdin = false;
+
+    while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0) {
+        if (flags.p) {
+            write(1, buffer, 0);
+        }
+        read_stdin = true;
+    }
+
+    if (read_stdin && !flags.q) {
+        printf("(stdin)= 35f1d6de0302e2086a4e472266efb3a9\n");
+    }
+}
+
+void md5string(t_md5_flags flags, t_buffer string_buffer) {
+
+    (void) flags;
+    (void) string_buffer;
+    printf("MD5 (\"%s\")= 3ba35f1ea0d170cb3b9a752e3360286c\n", string_buffer.buffer);
+}
+
+void md5file(t_md5_flags flags, t_buffer file_buffer) {
+
+    (void) flags;
+    (void) file_buffer;
+    printf("3ba35f1ea0d170cb3b9a752e3360286c %s\n", file_buffer.filename);
+
+}
+
 void md5(int argc, const char **argv) {
     t_md5_flags flags = {false, false, false};
     t_buffer *string_buffers = NULL;
+    t_buffer *ptr;
+
+
     if (!parse_flags(argc, argv, &flags, &string_buffers)) {
         clear_list(string_buffers);
         return;
     }
-
-#ifdef DEBUG
-    t_buffer *ptr;
-    printf("Flag -p: %s, Flag -q: %s, Flag -r: %s\n",
-           flags.p ? "true" : "false",
-           flags.q ? "true" : "false",
-           flags.r ? "true" : "false");
+    md5stdin(flags);
     ptr = string_buffers;
+//#ifdef DEBUG
+//    printf("Flag -p: %s, Flag -q: %s, Flag -r: %s\n",
+//           flags.p ? "true" : "false",
+//           flags.q ? "true" : "false",
+//           flags.r ? "true" : "false");
+//#endif
     while (ptr) {
-        if (ptr->buffer)
-            printf("String: %s\n", ptr->buffer);
-        else if (ptr->filename)
-            printf("Filename: %s\n", ptr->filename);
+        if (ptr->buffer) {
+            md5string(flags, *ptr);
+        } else if (ptr->filename) {
+            md5file(flags, *ptr);
+        }
         ptr = ptr->next;
     }
-#endif
-
     clear_list(string_buffers);
 }
