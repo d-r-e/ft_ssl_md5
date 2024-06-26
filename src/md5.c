@@ -58,7 +58,9 @@ void md5stdin(t_md5_flags flags) {
     ssize_t bytes_read;
     bool read_stdin = false;
 
-    while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0) {
+    
+    while (flags.p && (bytes_read = read(fd, buffer, sizeof(buffer))) > 0) {
+        printf("read: %ld\n", bytes_read);
         if (flags.p) {
             write(1, buffer, 0);
         }

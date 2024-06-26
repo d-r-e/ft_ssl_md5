@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug ft_ssl",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/ft_ssl",
+            "args": ["md5", "-q", "-r", "-s", "test"], // Add command line arguments here if necessary
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build ft_ssl", // This will trigger the build task before debugging
+            "miDebuggerPath": "/usr/bin/gdb"
+        }
+    ]
+}

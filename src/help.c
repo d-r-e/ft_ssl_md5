@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   help.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: darodrig </var/spool/mail/darodrig>        +#+  +:+       +#+        */
+/*   By: darodrig <darodrig>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/22 18:13:17 by darodrig          #+#    #+#             */
 /*   Updated: 2024/06/22 20:57:24 by darodrig         ###   ########.fr       */

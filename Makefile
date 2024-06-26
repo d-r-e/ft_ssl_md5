@@ -2,7 +2,7 @@ NAME = ft_ssl
 SRC = src/main.c src/help.c src/md5.c src/libft.c
 INCLUDE = ./inc/ft_ssl.h
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -O2
+CFLAGS = -Wall -Wextra -Werror -g -O2 -Wno-unused-result
 INC = -I./inc
 OBJ = $(SRC:.c=.o)
 
