@@ -22,6 +22,7 @@ typedef struct s_md5_flags
     bool        p;
     bool        q;
     bool        r;
+    bool        s;
 }   t_md5_flags;
 
 typedef struct s_buffer
@@ -42,6 +43,6 @@ int     ft_strcmp(const char *s1, const char *s2);
 size_t  ft_strlen(const char *s);
 void    ft_memset(void *b, int c, size_t len);
 void    usage(const char **argv);
-void    md5(int argc, const char **argv);
+void    exec_command(int argc, const char **argv);
 
 #endif

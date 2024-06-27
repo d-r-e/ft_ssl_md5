@@ -2,7 +2,7 @@
 
 static int execute_command(int argc, const char **argv){
     t_command commands[] = {
-        {"md5", md5},
+        {"md5", exec_command},
         {"sha256", (void (*)(int, const char **))NULL},
         {NULL, NULL}
     };
