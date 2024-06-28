@@ -124,7 +124,7 @@ void from_string(t_md5_flags flags, t_buffer string_buffer)
 
     (void)flags;
     (void)string_buffer;
-    printf("MD5 (\"%s\")= 3ba35f1ea0d170cb3b9a752e3360286c\n", string_buffer.buffer);
+    md5main(string_buffer.buffer);
 }
 
 void from_file(t_md5_flags flags, t_buffer file_buffer)

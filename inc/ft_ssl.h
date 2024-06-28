@@ -8,6 +8,7 @@
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdlib.h>
+# include <math.h>
 
 # define DEBUG 0
 
@@ -32,17 +33,20 @@ typedef struct s_buffer
     struct s_buffer *next;
 }   t_buffer;
 
-typedef struct s_md5_state
-{
-    uint32_t    h[4];
-    uint8_t     data[64];
-    uint64_t    bitlen;
-}   t_md5_state;
+typedef struct s_md5_ctx{
+    uint32_t    A, B, C, D;
+    uint64_t    count;
+    uint8_t     buffer[64];
+} t_md5_ctx;
+
+
 
 int     ft_strcmp(const char *s1, const char *s2);
 size_t  ft_strlen(const char *s);
 void    ft_memset(void *b, int c, size_t len);
+void    ft_memcpy(void *dst, const void *src, size_t len);
 void    usage(const char **argv);
 void    exec_command(int argc, const char **argv);
+const char *md5main(const char *buffer);
 
 #endif

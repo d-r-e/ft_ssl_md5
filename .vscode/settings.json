@@ -1,8 +1,11 @@
 {
     "files.associations": {
+        "*.embeddedhtml": "html",
+        "README": "markdown",
         "libft.h": "c",
         "chrono": "c",
         "unordered_map": "c",
-        "cstdio": "cpp"
+        "cstdio": "cpp",
+        "ft_ssl.h": "c"
     }
 }

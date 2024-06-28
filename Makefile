@@ -1,5 +1,5 @@
 NAME = ft_ssl
-SRC = src/main.c src/help.c src/command.c src/libft.c
+SRC = src/main.c src/help.c src/command.c src/libft.c src/md5.c
 INCLUDE = ./inc/ft_ssl.h
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g -O2 -Wno-unused-result
