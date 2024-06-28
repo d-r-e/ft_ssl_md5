@@ -157,13 +157,10 @@ void exec_command(int argc, const char **argv)
     {
         if (ptr->buffer)
         {
-            printf("From string\n");
             from_string(flags, *ptr);
         }
         else if (ptr->filename)
         {
-            printf("From file\n");
-
             from_file(flags, *ptr);
         }
         else
