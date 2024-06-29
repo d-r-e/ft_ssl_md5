@@ -1,17 +1,16 @@
 #include "ft_ssl.h"
 
 static t_buffer *create_buffer(const char *buffer_content, const char *filename, bool from_stdin) {
-    t_buffer *new_buffer = malloc(sizeof(t_buffer));
-    if (!new_buffer) {
+    t_buffer *new_buffer; ;
+
+    if (!(new_buffer = malloc(sizeof(t_buffer)))) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-
-    new_buffer->buffer = buffer_content ? strdup(buffer_content) : NULL;
-    new_buffer->filename = filename ? strdup(filename) : NULL;
+    new_buffer->buffer = buffer_content;
+    new_buffer->filename = filename;
     new_buffer->from_stdin = from_stdin;
     new_buffer->next = NULL;
-
     return new_buffer;
 }
 
