@@ -195,17 +195,11 @@ void exec_command(int argc, const char **argv)
     while (ptr)
     {
         if (ptr->buffer)
-        {
             from_string(flags, *ptr);
-        }
         else if (ptr->filename)
-        {
             from_file(flags, *ptr);
-        }
         else
-        {
             from_stdin(flags);
-        }
         ptr = ptr->next;
     }
     clear_list(string_buffers);
