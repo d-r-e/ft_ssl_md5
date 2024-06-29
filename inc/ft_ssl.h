@@ -51,9 +51,8 @@ void    usage(const char **argv);
 void    exec_command(int argc, const char **argv);
 
 //* MD5 *//
-void    md5main(const t_buffer *buffer);
-void    md5file(const t_buffer *buffer);
-
+void    md5main(const t_buffer *buffer, t_md5_flags flags);
+void md5file(const t_buffer *file_buffer, t_md5_flags flags);
 
 //* SHA256 *//
 

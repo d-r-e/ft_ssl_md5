@@ -98,40 +98,40 @@ void append_to_buffer(t_buffer **head, const char *data, size_t len) {
 
 void from_string(t_md5_flags flags, t_buffer string_buffer) {
     (void) flags;
-    md5main(&string_buffer);
+    md5main(&string_buffer, flags);
 }
 
 void from_stdin(t_md5_flags flags) {
-    int fd = 0;
-    char buffer[1024];
+    char *buffer = NULL;
+    size_t buffer_size = 0;
     ssize_t bytes_read;
     bool read_stdin = false;
     t_buffer *head = NULL;
 
-    if (!flags.p && !flags.q) {
-        printf("(stdin)= ");
-    }
-
-    while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0) {
+    while ((bytes_read = getline(&buffer, &buffer_size, stdin)) != -1) {
         if (flags.p && !flags.q) {
             write(1, buffer, bytes_read);
         }
         append_to_buffer(&head, buffer, bytes_read);
         read_stdin = true;
     }
-
-
-    if (read_stdin) {
+    free(buffer);
+    if (read_stdin && head) {
         from_string(flags, *head);
     }
 }
 
 
 void from_file(t_md5_flags flags, t_buffer file_buffer) {
-    md5file(&file_buffer);
     if (!flags.q && !flags.r) {
-        printf(" %s\n", file_buffer.filename);
+        printf("MD5 (%s) = ", file_buffer.filename);
     }
+    md5file(&file_buffer, flags);
+    if (!flags.q && flags.r) {
+        printf(" %s", file_buffer.filename);
+    }
+    printf("\n");
+
 }
 
 void exec_command(int argc, const char **argv) {

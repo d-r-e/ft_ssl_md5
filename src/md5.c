@@ -190,13 +190,15 @@ static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
     ft_memset(context, 0, sizeof(*context));
 }
 
-static void print_digest(uint8_t digest[16]) {
+static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags flags) {
+
+    (void)buffer;
+    (void)flags;
     for (int i = 0; i < 16; i++)
         printf("%02x", digest[i]);
-    printf("\n");
 }
 
-void md5main(const t_buffer *buffer) {
+void md5main(const t_buffer *buffer, t_md5_flags flags) {
     t_md5_ctx state;
     uint8_t digest[16];
     md5_init(&state);
@@ -207,11 +209,11 @@ void md5main(const t_buffer *buffer) {
     }
 
     md5_final(digest, &state);
-    print_digest(digest);
+    print_digest(buffer, digest, flags);
 }
 
 
-void md5file(const t_buffer *file_buffer) {
+void md5file(const t_buffer *file_buffer, t_md5_flags flags) {
     const char *filename = file_buffer->filename;
     int fd;
     ssize_t bytes_read;
@@ -233,5 +235,5 @@ void md5file(const t_buffer *file_buffer) {
         exit(EXIT_FAILURE);
     }
     md5_final(digest, &state);
-    print_digest(digest);
+    print_digest(file_buffer, digest, flags);
 }

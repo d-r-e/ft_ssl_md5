@@ -51,8 +51,8 @@ check_output 'echo "42 is nice" | ./ft_ssl md5' '(stdin)= 35f1d6de0302e2086a4e47
  check_output 'echo "Pity the living." | ./ft_ssl md5 -q -r' 'e20c3b973f63482a778f3fd1869b7f25'
 
 # # File based tests
-# echo "And above all," > file
-# check_output './ft_ssl md5 file' 'MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
+ echo "And above all," > file
+ check_output './ft_ssl md5 file' 'MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 # check_output './ft_ssl md5 -r file' '53d53ea94217b259c11a5a2d104ec58a file'
 
 # # String input with -s flag
@@ -89,11 +89,15 @@ check_output 'echo "42 is nice" | ./ft_ssl md5' '(stdin)= 35f1d6de0302e2086a4e47
 # check_output './ft_ssl md5 -s ""' 'MD5 ("") = d41d8cd98f00b204e9800998ecf8427e'
 # check_output 'echo -n "" | ./ft_ssl md5' '(stdin)= d41d8cd98f00b204e9800998ecf8427e'
 
-check_valgrind "./ft_ssl md5 -s ''"
-check_valgrind "./ft_ssl md5 -s 'test'"
-check_valgrind "./ft_ssl md5 file"
-check_valgrind "./ft_ssl md5 -s '' -s bad -s wrong file1 file2 file3"
-check_valgrind "./ft_ssl md5 edge_case_file"
+if [ "$1" == "valgrind" ]; then
+  echo_yellow "Running valgrind tests..."
+  check_valgrind "./ft_ssl md5 file"
+  check_valgrind "./ft_ssl md5 -s ''"
+  check_valgrind "./ft_ssl md5 -s 'test'"
+  check_valgrind "./ft_ssl md5 -s '' -s bad -s wrong file1 file2 file3"
+  check_valgrind "./ft_ssl md5 edge_case_file"
+
+fi
 
 # Clean up
 rm -f file edge_case_file
