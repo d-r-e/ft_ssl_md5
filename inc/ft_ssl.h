@@ -10,7 +10,6 @@
 # include <stdlib.h>
 # include <math.h>
 
-# define DEBUG 0
 
 typedef struct s_command
 {
@@ -47,6 +46,6 @@ void    ft_memset(void *b, int c, size_t len);
 void    ft_memcpy(void *dst, const void *src, size_t len);
 void    usage(const char **argv);
 void    exec_command(int argc, const char **argv);
-const char *md5main(const char *buffer);
+void    md5main(const t_buffer *buffer);
 
 #endif

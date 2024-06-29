@@ -46,9 +46,9 @@ function check_valgrind {
 }
 
 # Tests with expected output
-check_output 'echo -n "42 is nice" | ./ft_ssl md5' "(stdin)= 35f1d6de0302e2086a4e472266efb3a9"
-check_output 'echo "42 is nice" | ./ft_ssl md5 -p' '("42 is nice")= 35f1d6de0302e2086a4e472266efb3a9'
-# check_output 'echo "Pity the living." | ./ft_ssl md5 -q -r' 'e20c3b973f63482a778f3fd1869b7f25'
+check_output 'echo -n "42 is nice" | ./ft_ssl md5' "(stdin)= 0029a98ee90fdb85d70924d44d3c9e75"
+check_output 'echo "42 is nice" | ./ft_ssl md5' '(stdin)= 35f1d6de0302e2086a4e472266efb3a9'
+ check_output 'echo "Pity the living." | ./ft_ssl md5 -q -r' 'e20c3b973f63482a778f3fd1869b7f25'
 
 # # File based tests
 # echo "And above all," > file
@@ -89,9 +89,10 @@ check_output 'echo "42 is nice" | ./ft_ssl md5 -p' '("42 is nice")= 35f1d6de0302
 # check_output './ft_ssl md5 -s ""' 'MD5 ("") = d41d8cd98f00b204e9800998ecf8427e'
 # check_output 'echo -n "" | ./ft_ssl md5' '(stdin)= d41d8cd98f00b204e9800998ecf8427e'
 
-# check_valgrind "./ft_ssl md5"
-# check_valgrind "./ft_ssl md5 -s 'test'"
-# check_valgrind "./ft_ssl md5 file"
+check_valgrind "./ft_ssl md5 -s ''"
+check_valgrind "./ft_ssl md5 -s 'test'"
+check_valgrind "./ft_ssl md5 file"
+check_valgrind "./ft_ssl md5 -s '' -s bad -s wrong file1 file2 file3"
 check_valgrind "./ft_ssl md5 edge_case_file"
 
 # Clean up

@@ -95,27 +95,33 @@ static void clear_list(t_buffer *list)
     }
 }
 
-void from_stdin(t_md5_flags flags)
+void append_to_buffer(t_buffer **head, const char *data, size_t len)
 {
-    int fd = 0;
-    char buffer[1024];
-    ssize_t bytes_read;
-    bool read_stdin = false;
-
-    if (flags.p)
-        write(1, "(\"", 2);
-    while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
+    t_buffer *new_node = malloc(sizeof(t_buffer));
+    if (new_node == NULL)
     {
-        if (flags.p && !flags.q)
-        {
-            write(1, buffer, bytes_read);
-        }
-        read_stdin = true;
+        perror("malloc");
+        exit(EXIT_FAILURE);
     }
-    write(1, ")= ", 3);
-    if (read_stdin && !flags.q && !flags.p)
+    new_node->buffer = strndup(data, len);
+    if (new_node->buffer == NULL)
     {
-        printf("(stdin)= 35f1d6de0302e2086a4e472266efb3a9\n");
+        perror("strndup");
+        exit(EXIT_FAILURE);
+    }
+    new_node->next = NULL;
+    if (*head == NULL)
+    {
+        *head = new_node;
+    }
+    else
+    {
+        t_buffer *current = *head;
+        while (current->next != NULL)
+        {
+            current = current->next;
+        }
+        current->next = new_node;
     }
 }
 
@@ -123,16 +129,49 @@ void from_string(t_md5_flags flags, t_buffer string_buffer)
 {
 
     (void)flags;
-    (void)string_buffer;
-    md5main(string_buffer.buffer);
+    md5main(&string_buffer);
 }
+
+void from_stdin(t_md5_flags flags)
+{
+    int fd = 0;
+    char buffer[1024];
+    ssize_t bytes_read;
+    bool read_stdin = false;
+    t_buffer *head = NULL;
+
+    if (!flags.p && !flags.q) {
+
+        printf("(stdin)= ");
+
+    }
+
+    while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0)
+    {
+        if (flags.p && !flags.q)
+        {
+            write(1, buffer, bytes_read);
+        }
+        append_to_buffer(&head, buffer, bytes_read);
+        read_stdin = true;
+    }
+
+
+    if (read_stdin)
+    {
+        from_string(flags, *head);
+    }
+
+
+}
+
+
 
 void from_file(t_md5_flags flags, t_buffer file_buffer)
 {
 
     (void)flags;
     (void)file_buffer;
-    printf("3ba35f1ea0d170cb3b9a752e3360286c %s\n", file_buffer.filename);
 }
 
 void exec_command(int argc, const char **argv)
