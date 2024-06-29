@@ -97,7 +97,6 @@ void append_to_buffer(t_buffer **head, const char *data, size_t len) {
 }
 
 void from_string(t_md5_flags flags, t_buffer string_buffer) {
-    (void) flags;
     md5main(&string_buffer, flags);
 }
 
@@ -123,15 +122,10 @@ void from_stdin(t_md5_flags flags) {
 
 
 void from_file(t_md5_flags flags, t_buffer file_buffer) {
-    if (!flags.q && !flags.r) {
-        printf("MD5 (%s) = ", file_buffer.filename);
-    }
     md5file(&file_buffer, flags);
     if (!flags.q && flags.r) {
         printf(" %s", file_buffer.filename);
     }
-    printf("\n");
-
 }
 
 void exec_command(int argc, const char **argv) {

@@ -191,17 +191,40 @@ static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
 }
 
 static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags flags) {
+    char *format = "%02x";
+    if (flags.q) {
+        for (int i = 0; i < 16; i++)
+            printf(format, digest[i]);
+        printf("\n");
+    } else if (flags.r) {
+        if (buffer && buffer->filename)
+            printf(" %s\nMD5 (%s) = ", buffer->filename, buffer->filename);
+        else if (buffer->buffer)
+            printf(" \"%s\"\nMD5 (\"%s\") = ", buffer->buffer, buffer->buffer);
 
-    (void)buffer;
-    (void)flags;
-    for (int i = 0; i < 16; i++)
-        printf("%02x", digest[i]);
+        for (int i = 0; i < 16; i++)
+            printf(format, digest[i]);
+        printf("\n");
+    } else {
+        if (buffer && buffer->filename)
+            printf("MD5 (%s) = ", buffer->filename);
+        else if (buffer->buffer)
+            printf("MD5 (\"%s\") = ", buffer->buffer);
+
+        for (int i = 0; i < 16; i++)
+            printf(format, digest[i]);
+
+        if (flags.p && buffer->buffer)
+            printf(" %s", buffer->buffer);
+        printf("\n");
+    }
 }
 
 void md5main(const t_buffer *buffer, t_md5_flags flags) {
     t_md5_ctx state;
     uint8_t digest[16];
     md5_init(&state);
+    t_buffer *tmp = (t_buffer *) buffer;
 
     while (buffer) {
         md5_update(&state, (const uint8_t *) buffer->buffer, ft_strlen(buffer->buffer));
@@ -209,7 +232,7 @@ void md5main(const t_buffer *buffer, t_md5_flags flags) {
     }
 
     md5_final(digest, &state);
-    print_digest(buffer, digest, flags);
+    print_digest(tmp, digest, flags);
 }
 
 
