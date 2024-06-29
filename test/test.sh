@@ -27,7 +27,7 @@ function check_output {
     local command="$1"
     local expected="$2"
     local result
-    result=$(eval "$command")
+    result=$(eval "$command" 2>&1)
     if [[ "$result" == "$expected" ]]; then
         echo_green "[OK] $command"
     else
@@ -44,6 +44,7 @@ function check_valgrind {
         echo_green "[OK] No memory leaks detected in: $command"
     else
         echo_red "[FAIL] Memory leaks detected in: $command"
+        echo_yellow "     valgrind --leak-check=full --show-leaks=all --error-exitcode=1 $command"
     fi
 }
 
@@ -72,17 +73,17 @@ MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 
  # Combined flags
  check_output 'echo "but eventually you will understand" | ./ft_ssl md5 -p -r file' '("but eventually you will understand")= dcdd84e0f635694d2a943fa8d3905281
- 53d53ea94217b259c11a5a2d104ec58a file'
+53d53ea94217b259c11a5a2d104ec58a file'
 
-# check_output 'echo "GL HF let'\''s go" | ./ft_ssl md5 -p -s "foo" file' '("GL HF let'\''s go")= d1e3cc342b6da09480b27ec57ff243e2
-# MD5 ("foo") = acbd18db4cc2f85cedef654fccc4a4d8
-# MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
+ check_output 'echo "GL HF let'\''s go" | ./ft_ssl md5 -p -s "foo" file' '("GL HF let'\''s go")= d1e3cc342b6da09480b27ec57ff243e2
+MD5 ("foo") = acbd18db4cc2f85cedef654fccc4a4d8
+MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 
-# check_output 'echo "one more thing" | ./ft_ssl md5 -r -p -s "foo" file -s "bar"' '("one more thing")= a0bd1876c6f011dd50fae52827f445f5
-# acbd18db4cc2f85cedef654fccc4a4d8 "foo"
-# 53d53ea94217b259c11a5a2d104ec58a file
-# ft_ssl: md5: -s: No such file or directory
-# ft_ssl: md5: bar: No such file or directory'
+ check_output 'echo "one more thing" | ./ft_ssl md5 -r -p -s "foo" file -s "bar"' '("one more thing")= a0bd1876c6f011dd50fae52827f445f5
+ acbd18db4cc2f85cedef654fccc4a4d8 "foo"
+ 53d53ea94217b259c11a5a2d104ec58a file
+ ft_ssl: md5: -s: No such file or directory
+ ft_ssl: md5: bar: No such file or directory'
 
 # check_output 'echo "just to be extra clear" | ./ft_ssl md5 -r -q -p -s "foo" file' 'just to be extra clear
 # 3ba35f1ea0d170cb3b9a752e3360286c
@@ -95,13 +96,14 @@ MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 # check_output './ft_ssl md5 -s ""' 'MD5 ("") = d41d8cd98f00b204e9800998ecf8427e'
 # check_output 'echo -n "" | ./ft_ssl md5' '(stdin)= d41d8cd98f00b204e9800998ecf8427e'
 
-if [ "$1" == "valgrind" ]; then
+if [ "$1" == "--valgrind" ]; then
   echo_yellow "Running valgrind tests..."
-  check_valgrind "./ft_ssl md5 file"
   check_valgrind "./ft_ssl md5 -s ''"
+  check_valgrind "./ft_ssl md5 file"
   check_valgrind "./ft_ssl md5 -s 'test'"
   check_valgrind "./ft_ssl md5 -s '' -s bad -s wrong file1 file2 file3"
   check_valgrind "./ft_ssl md5 edge_case_file"
+  check_valgrind "echo -n '' | ./ft_ssl md5 -r -q file -s test"
 
 fi
 

@@ -221,6 +221,7 @@ static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags
 void md5main(const t_buffer *buffer, t_md5_flags flags) {
     t_md5_ctx state;
     uint8_t digest[16];
+
     md5_init(&state);
     t_buffer *tmp = (t_buffer *) buffer;
 
@@ -234,15 +235,14 @@ void md5main(const t_buffer *buffer, t_md5_flags flags) {
 
 
 void md5file(const t_buffer *file_buffer, t_md5_flags flags) {
-    const char *filename = file_buffer->filename;
     int fd;
     ssize_t bytes_read;
     uint8_t buffer[BUFFER_SIZE];
     t_md5_ctx state;
     uint8_t digest[16];
 
-    if ((fd = open(filename, O_RDONLY)) < 0) {
-        perror("Error opening file");
+    if ((fd = open(file_buffer->filename, O_RDONLY)) < 0) {
+        dprintf(2, "ft_ssl: md5: %s: %s\n",file_buffer->filename, strerror(errno));
         return;
     }
     md5_init(&state);
@@ -251,8 +251,8 @@ void md5file(const t_buffer *file_buffer, t_md5_flags flags) {
     }
     close(fd);
     if (bytes_read == -1) {
-        perror("Error reading file");
-        exit(EXIT_FAILURE);
+        dprintf(2, "ft_ssl: md5: %s: %s\n", file_buffer->filename, strerror(errno));
+        return;
     }
     md5_final(digest, &state);
     print_digest(file_buffer, digest, flags);

@@ -11,7 +11,7 @@
 # include <string.h>
 # include <unistd.h>
 # include <sys/stat.h>
-
+# include <errno.h>
 #define BUFFER_SIZE 4096
 
 typedef struct s_command

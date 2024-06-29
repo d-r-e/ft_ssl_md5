@@ -21,6 +21,7 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
             }
             new_buffer->buffer = argv[i + 1];
             new_buffer->filename = NULL;
+            new_buffer->from_stdin = false;
             new_buffer->next = NULL;
             if (*string_buffers == NULL) {
                 *string_buffers = new_buffer;
@@ -44,6 +45,8 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
                 }
                 new_buffer->filename = argv[i];
                 new_buffer->buffer = NULL;
+                new_buffer->from_stdin = false;
+
                 new_buffer->next = *string_buffers;
                 *string_buffers = new_buffer;
             }
@@ -58,6 +61,7 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
         }
         new_buffer->filename = NULL;
         new_buffer->buffer = NULL;
+        new_buffer->from_stdin = true;
         new_buffer->next = *string_buffers;
         *string_buffers = new_buffer;  }
 
@@ -71,6 +75,8 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
         new_buffer->filename = NULL;
         new_buffer->buffer = NULL;
         new_buffer->next = NULL;
+        new_buffer->from_stdin = true;
+
         *string_buffers = new_buffer;
     }
     return 1;

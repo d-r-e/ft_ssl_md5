@@ -25,6 +25,9 @@ fclean: clean
 
 re: fclean all
 
+leaks: all
+	./test/test.sh --valgrind
+
 test: all
 	./test/test.sh
 .PHONY: clean fclean re all
