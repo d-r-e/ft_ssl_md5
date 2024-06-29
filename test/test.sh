@@ -107,7 +107,11 @@ if [ "$1" == "--valgrind" ]; then
 
 fi
 
-# Clean up
+dd if=/dev/random of=random_file bs=1M count=5 > /dev/null 2>&1
+md5=$(md5sum random_file | cut -d ' ' -f 1)
+mv random_file $md5
+check_output "./ft_ssl md5 $md5" "MD5 ($md5) = $md5"
+rm -f $md5
 rm -f file edge_case_file
 
 # Summary

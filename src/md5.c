@@ -186,7 +186,6 @@ static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
     encode(digest + 4, &context->B, 4);
     encode(digest + 8, &context->C, 4);
     encode(digest + 12, &context->D, 4);
-
     ft_memset(context, 0, sizeof(*context));
 }
 
