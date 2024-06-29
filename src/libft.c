@@ -57,3 +57,12 @@ void ft_memcpy(void *dst, const void *src, size_t len){
         s++;
     }
 }
+
+const char *ft_strchr(const char *str, char c) {
+    while (*str) {
+        if (*str == c)
+            return str;
+        str++;
+    }
+    return NULL;
+}

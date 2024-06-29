@@ -108,14 +108,12 @@ void from_stdin(t_md5_flags flags) {
     t_buffer *head = NULL;
 
     while ((bytes_read = getline(&buffer, &buffer_size, stdin)) != -1) {
-        if (flags.p && !flags.q) {
-            write(1, buffer, bytes_read);
-        }
         append_to_buffer(&head, buffer, bytes_read);
         read_stdin = true;
     }
     free(buffer);
     if (read_stdin && head) {
+        head->from_stdin = true;
         from_string(flags, *head);
     }
 }
@@ -123,9 +121,6 @@ void from_stdin(t_md5_flags flags) {
 
 void from_file(t_md5_flags flags, t_buffer file_buffer) {
     md5file(&file_buffer, flags);
-    if (!flags.q && flags.r) {
-        printf(" %s", file_buffer.filename);
-    }
 }
 
 void exec_command(int argc, const char **argv) {

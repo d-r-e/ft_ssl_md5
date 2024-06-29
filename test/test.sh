@@ -51,16 +51,16 @@ check_output 'echo "42 is nice" | ./ft_ssl md5' '(stdin)= 35f1d6de0302e2086a4e47
  check_output 'echo "Pity the living." | ./ft_ssl md5 -q -r' 'e20c3b973f63482a778f3fd1869b7f25'
 
 # # File based tests
- echo "And above all," > file
- check_output './ft_ssl md5 file' 'MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
-# check_output './ft_ssl md5 -r file' '53d53ea94217b259c11a5a2d104ec58a file'
+echo "And above all," > file
+check_output './ft_ssl md5 file' 'MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
+ check_output './ft_ssl md5 -r file' '53d53ea94217b259c11a5a2d104ec58a file'
 
-# # String input with -s flag
-# check_output './ft_ssl md5 -s "pity those that aren'\''t following baerista on spotify."' 'MD5 ("pity those that aren'\''t following baerista on spotify.") = a3c990a1964705d9bf0e602f44572f5f'
+ # String input with -s flag
+ check_output './ft_ssl md5 -s "pity those that aren'\''t following baerista on spotify."' 'MD5 ("pity those that aren'\''t following baerista on spotify.") = a3c990a1964705d9bf0e602f44572f5f'
 
-# # Edge cases
-# check_output 'echo "be sure to handle edge cases carefully" | ./ft_ssl md5 -p file' '("be sure to handle edge cases carefully")= 3553dc7dc5963b583c056d1b9fa3349c
-# MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
+ # Edge cases
+ check_output 'echo "be sure to handle edge cases carefully" | ./ft_ssl md5 -p file' '("be sure to handle edge cases carefully")= 3553dc7dc5963b583c056d1b9fa3349c
+ MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 
 # check_output 'echo "some of this will not make sense at first" | ./ft_ssl md5 file' 'MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 

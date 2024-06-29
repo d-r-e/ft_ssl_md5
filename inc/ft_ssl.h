@@ -33,6 +33,7 @@ typedef struct s_buffer
     const char *buffer;
     const char *filename;
     struct s_buffer *next;
+    bool    from_stdin;
 }   t_buffer;
 
 typedef struct s_md5_ctx{
@@ -47,6 +48,8 @@ int     ft_strcmp(const char *s1, const char *s2);
 size_t  ft_strlen(const char *s);
 void    ft_memset(void *b, int c, size_t len);
 void    ft_memcpy(void *dst, const void *src, size_t len);
+const char *ft_strchr(const char *str, char c);
+
 void    usage(const char **argv);
 void    exec_command(int argc, const char **argv);
 
