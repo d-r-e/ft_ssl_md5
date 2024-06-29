@@ -1,5 +1,20 @@
 #include "ft_ssl.h"
 
+static t_buffer *create_buffer(const char *buffer_content, const char *filename, bool from_stdin) {
+    t_buffer *new_buffer = malloc(sizeof(t_buffer));
+    if (!new_buffer) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    new_buffer->buffer = buffer_content ? strdup(buffer_content) : NULL;
+    new_buffer->filename = filename ? strdup(filename) : NULL;
+    new_buffer->from_stdin = from_stdin;
+    new_buffer->next = NULL;
+
+    return new_buffer;
+}
+
 static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer **string_buffers) {
     for (int i = 2; i < argc; i++) {
         if (ft_strcmp(argv[i], "-p") == 0) {
@@ -14,15 +29,7 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
                 fprintf(stderr, "%s: %s: option requires an argument -- s\n", argv[0], argv[1]);
                 return 0;
             }
-            t_buffer *new_buffer = malloc(sizeof(t_buffer));
-            if (!new_buffer) {
-                perror("malloc");
-                return 0;
-            }
-            new_buffer->buffer = argv[i + 1];
-            new_buffer->filename = NULL;
-            new_buffer->from_stdin = false;
-            new_buffer->next = NULL;
+            t_buffer *new_buffer = create_buffer(argv[i + 1], NULL, false);
             if (*string_buffers == NULL) {
                 *string_buffers = new_buffer;
             } else {
@@ -38,47 +45,24 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
                 printf("%s: %s: illegal option -- %c\n", argv[0], argv[1], argv[i][1]);
                 return 0;
             } else {
-                t_buffer *new_buffer = malloc(sizeof(t_buffer));
-                if (!new_buffer) {
-                    perror("malloc");
-                    return 0;
-                }
-                new_buffer->filename = argv[i];
-                new_buffer->buffer = NULL;
-                new_buffer->from_stdin = false;
-
+                t_buffer *new_buffer = create_buffer(NULL, argv[i], false);
                 new_buffer->next = *string_buffers;
                 *string_buffers = new_buffer;
             }
         }
     }
-    if (flags->p)
-    {
-        t_buffer *new_buffer = malloc(sizeof(t_buffer));
-        if (!new_buffer) {
-            perror("malloc");
-            return 0;
-        }
-        new_buffer->filename = NULL;
-        new_buffer->buffer = NULL;
-        new_buffer->from_stdin = true;
+
+    if (flags->p) {
+        t_buffer *new_buffer = create_buffer(NULL, NULL, true);
         new_buffer->next = *string_buffers;
-        *string_buffers = new_buffer;  }
-
-
-    if (!flags->p && !flags->s && *string_buffers == NULL) {
-        t_buffer *new_buffer = malloc(sizeof(t_buffer));
-        if (!new_buffer) {
-            perror("malloc");
-            return 0;
-        }
-        new_buffer->filename = NULL;
-        new_buffer->buffer = NULL;
-        new_buffer->next = NULL;
-        new_buffer->from_stdin = true;
-
         *string_buffers = new_buffer;
     }
+
+    if (!flags->p && !flags->s && *string_buffers == NULL) {
+        t_buffer *new_buffer = create_buffer(NULL, NULL, true);
+        *string_buffers = new_buffer;
+    }
+
     return 1;
 }
 
