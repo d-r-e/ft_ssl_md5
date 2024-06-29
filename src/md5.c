@@ -187,7 +187,7 @@ static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
     encode(digest + 8, &context->C, 4);
     encode(digest + 12, &context->D, 4);
 
-    memset(context, 0, sizeof(*context));
+    ft_memset(context, 0, sizeof(*context));
 }
 
 static void print_digest(uint8_t digest[16]) {
@@ -206,6 +206,32 @@ void md5main(const t_buffer *buffer) {
         buffer = buffer->next;
     }
 
+    md5_final(digest, &state);
+    print_digest(digest);
+}
+
+
+void md5file(const t_buffer *file_buffer) {
+    const char *filename = file_buffer->filename;
+    int fd;
+    ssize_t bytes_read;
+    uint8_t buffer[BUFFER_SIZE];
+    t_md5_ctx state;
+    uint8_t digest[16];
+
+    if ((fd = open(filename, O_RDONLY)) < 0) {
+        perror("Error opening file");
+        return;
+    }
+    md5_init(&state);
+    while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0) {
+        md5_update(&state, buffer, bytes_read);
+    }
+    close(fd);
+    if (bytes_read == -1) {
+        perror("Error reading file");
+        exit(EXIT_FAILURE);
+    }
     md5_final(digest, &state);
     print_digest(digest);
 }

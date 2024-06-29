@@ -1,15 +1,18 @@
 #ifndef FT_SSL_H
 # define FT_SSL_H
 
-# include <unistd.h>
-# include <string.h>
-# include <stdint.h>
-# include <stdio.h>
+# include <fcntl.h>
+# include <math.h>
 # include <stdbool.h>
 # include <stddef.h>
+# include <stdint.h>
+# include <stdio.h>
 # include <stdlib.h>
-# include <math.h>
+# include <string.h>
+# include <unistd.h>
+# include <sys/stat.h>
 
+#define BUFFER_SIZE 4096
 
 typedef struct s_command
 {
@@ -46,6 +49,13 @@ void    ft_memset(void *b, int c, size_t len);
 void    ft_memcpy(void *dst, const void *src, size_t len);
 void    usage(const char **argv);
 void    exec_command(int argc, const char **argv);
+
+//* MD5 *//
 void    md5main(const t_buffer *buffer);
+void    md5file(const t_buffer *buffer);
+
+
+//* SHA256 *//
+
 
 #endif
