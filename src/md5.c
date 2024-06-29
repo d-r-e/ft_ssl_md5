@@ -195,34 +195,26 @@ static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags
     char output[128];
     int pos = 0;
 
+    if (flags.p && buffer && buffer->from_stdin && ft_strlen(ft_strchr(buffer->buffer, '\n')) == 1)
+        *ft_strchr(buffer->buffer, '\n')= 0;
     for (int i = 0; i < 16; i++)
         pos += sprintf(output + pos, format, digest[i]);
     if (flags.q) {
         printf("%s\n", output);
     } else if (!flags.r) {
         if (buffer && buffer->filename)
-            printf("MD5 (%s) = %s", buffer->filename, output);
+            printf("MD5 (%s) = %s\n", buffer->filename, output);
         else if (flags.p && buffer && buffer->buffer && buffer->from_stdin)
-            printf(" \"%s\"", buffer->buffer);
+            printf("(\"%s\") = %s\n", buffer->buffer, output);
         else if (!flags.p && buffer && buffer->buffer && buffer->from_stdin)
-            printf("(stdin)= %s",  output);
-        else if (buffer && buffer->buffer) {
-            printf("MD5 (\"%s\") = %s", buffer->buffer, output);
-        }
-        printf("\n");
-    } else {
-        printf("%s", output);
-        if (buffer && buffer->filename)
-            printf(" %s", buffer->filename);
+            printf("(stdin)= %s\n",  output);
         else if (buffer && buffer->buffer)
-            printf(" %s", buffer->buffer);
-        if (flags.p && buffer && buffer->from_stdin && buffer->buffer) {
-            if (ft_strchr(buffer->buffer, '\n') == NULL)
-                printf(" \"%s\"", buffer->buffer);
-            else
-                printf(" \"%s\"", buffer->buffer);
-        }
-        printf("\n");
+            printf("MD5 (\"%s\") = %s\n", buffer->buffer, output);
+    } else {
+        if (buffer && buffer->filename)
+            printf("%s %s\n",output, buffer->filename);
+        else if (buffer && buffer->buffer)
+            printf("(\"%s\")= %s\n", buffer->buffer, output);
     }
 }
 

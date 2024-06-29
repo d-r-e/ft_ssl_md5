@@ -4,15 +4,6 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
     for (int i = 2; i < argc; i++) {
         if (ft_strcmp(argv[i], "-p") == 0) {
             flags->p = true;
-            t_buffer *new_buffer = malloc(sizeof(t_buffer));
-            if (!new_buffer) {
-                perror("malloc");
-                return 0;
-            }
-            new_buffer->filename = NULL;
-            new_buffer->buffer = NULL;
-            new_buffer->next = *string_buffers;
-            *string_buffers = new_buffer;
         } else if (ft_strcmp(argv[i], "-q") == 0) {
             flags->q = true;
         } else if (ft_strcmp(argv[i], "-r") == 0) {
@@ -20,7 +11,7 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
         } else if (ft_strcmp(argv[i], "-s") == 0) {
             flags->s = true;
             if (i + 1 >= argc) {
-                printf("%s: %s: option requires an argument -- s\n", argv[0], argv[1]);
+                fprintf(stderr, "%s: %s: option requires an argument -- s\n", argv[0], argv[1]);
                 return 0;
             }
             t_buffer *new_buffer = malloc(sizeof(t_buffer));
@@ -30,8 +21,16 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
             }
             new_buffer->buffer = argv[i + 1];
             new_buffer->filename = NULL;
-            new_buffer->next = *string_buffers;
-            *string_buffers = new_buffer;
+            new_buffer->next = NULL;
+            if (*string_buffers == NULL) {
+                *string_buffers = new_buffer;
+            } else {
+                t_buffer *ptr = *string_buffers;
+                while (ptr->next != NULL) {
+                    ptr = ptr->next;
+                }
+                ptr->next = new_buffer;
+            }
             i++;
         } else {
             if (argv[i][0] == '-') {
@@ -50,7 +49,8 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
             }
         }
     }
-    if (!flags->p && !flags->s && !*string_buffers) {
+    if (flags->p)
+    {
         t_buffer *new_buffer = malloc(sizeof(t_buffer));
         if (!new_buffer) {
             perror("malloc");
@@ -59,6 +59,18 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
         new_buffer->filename = NULL;
         new_buffer->buffer = NULL;
         new_buffer->next = *string_buffers;
+        *string_buffers = new_buffer;  }
+
+
+    if (!flags->p && !flags->s && *string_buffers == NULL) {
+        t_buffer *new_buffer = malloc(sizeof(t_buffer));
+        if (!new_buffer) {
+            perror("malloc");
+            return 0;
+        }
+        new_buffer->filename = NULL;
+        new_buffer->buffer = NULL;
+        new_buffer->next = NULL;
         *string_buffers = new_buffer;
     }
     return 1;
@@ -133,18 +145,11 @@ void exec_command(int argc, const char **argv) {
         return;
     }
     ptr = string_buffers;
-    // #ifdef DEBUG
-    //     printf("Flag -p: %s, Flag -q: %s, Flag -r: %s\n",
-    //            flags.p ? "true" : "false",
-    //            flags.q ? "true" : "false",
-    //            flags.r ? "true" : "false");
-    // #endif
     while (ptr) {
         if (ptr->buffer)
             from_string(flags, *ptr);
         else if (ptr->filename) {
             from_file(flags, *ptr);
-            (void) from_stdin;
         } else
             from_stdin(flags);
         ptr = ptr->next;
