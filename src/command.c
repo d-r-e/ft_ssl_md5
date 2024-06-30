@@ -82,7 +82,7 @@ void append_to_buffer(t_buffer **head, const char *data, size_t len) {
     }
     new_node->buffer = ft_strndup(data, len);
     if (new_node->buffer == NULL) {
-        perror("strndup");
+        perror("ft_strndup");
         exit(EXIT_FAILURE);
     }
     new_node->next = NULL;
@@ -102,21 +102,29 @@ void from_string(t_md5_flags flags, t_buffer string_buffer) {
 }
 
 void from_stdin(t_md5_flags flags) {
-    char *buffer = NULL;
-    size_t buffer_size = 0;
-    ssize_t bytes_read;
-    bool read_stdin = false;
-    t_buffer *head = NULL;
+	char buffer[BUFFER_SIZE];
+	ssize_t bytes;
+	bool read_stdin = false;
+	t_buffer *head = NULL;
 
-    while ((bytes_read = getline(&buffer, &buffer_size, stdin)) > 0) {
-        append_to_buffer(&head, buffer, bytes_read);
-        read_stdin = true;
-    }
-    free(buffer);
-    if (read_stdin && head) {
-        head->from_stdin = true;
-        from_string(flags, *head);
-    }
+	while ((bytes = read(STDIN_FILENO, buffer, BUFFER_SIZE)) > 0) {
+		append_to_buffer(&head, buffer, bytes);
+	}
+	if (!head) {
+		append_to_buffer(&head, "", 0);
+	}
+	read_stdin = true;
+	if (read_stdin && head) {
+		head->from_stdin = true;
+		from_string(flags, *head);
+	}
+
+	t_buffer *current = head;
+	while (current != NULL) {
+		t_buffer *next = current->next;
+		free(current);
+		current = next;
+	}
 }
 
 
@@ -139,8 +147,10 @@ void exec_command(int argc, const char **argv) {
             from_string(flags, *ptr);
         else if (ptr->filename) {
             from_file(flags, *ptr);
-        } else
+        } else {
+	        // printf("From stdin\n");
             from_stdin(flags);
+        }
         ptr = ptr->next;
     }
     clear_list(string_buffers);
