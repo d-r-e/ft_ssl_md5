@@ -122,17 +122,22 @@ static void sha256final(uint8_t *digest, t_sha256_ctx *state) {
 }
 
 void sha256file(const t_buffer *file_buffer, t_flags flags) {
+	int fd;
+	ssize_t bytes_read;
 	t_sha256_ctx state;
 	uint8_t digest[32];
-	sha256init(&state);
 
-	t_buffer *ptr = (t_buffer *)file_buffer;
-	while (ptr) {
-		sha256_update(&state, (const uint8_t *)ptr->buffer, ft_strlen(ptr->buffer));
-		ptr = ptr->next;
+	sha256init(&state);
+	fd = open(file_buffer->buffer, O_RDONLY);
+	if (fd < 0) {
+		dprintf(2, "ft_ssl: sha256: %s: %s\n", file_buffer->buffer, strerror(errno));
+		return;
+	}
+	while ((bytes_read = read(fd, state.buffer, 64)) > 0) {
+		sha256_update(&state, state.buffer, bytes_read);
 	}
 	sha256final(digest, &state);
-	print_digest(file_buffer, digest, flags, 32);
+	print_digest(file_buffer, digest, flags, 16);
 }
 
 void print_initial_digest(t_sha256_ctx *state) {
