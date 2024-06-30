@@ -67,7 +67,13 @@ void sha256(int argc, const char **argv);
 //* Common utils */
 void encode(uint8_t *output, uint32_t *input, size_t len);
 void decode(uint32_t *output, const uint8_t *input, size_t len);
-void print_digest(const t_buffer *buffer, uint8_t digest[16], t_flags flags, uint8_t len);
+void print_digest(
+	const t_buffer *buffer,
+	uint8_t digest[16],
+	t_flags flags,
+	uint8_t len,
+	const char *algo
+	);
 
 //* MD5 *//
 void md5str(const t_buffer *buffer, t_flags flags);

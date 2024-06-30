@@ -27,9 +27,13 @@ function check_output {
     if [[ "$(echo "$result" | sort)" == "$(echo "$expected" | sort)" ]]; then
         echo_green "[OK] $command"
     else
-        echo_red "[FAIL] $command ··· "
-        echo_red "Expected: \"$expected\""
-        echo_red "Got     : \"$result\""
+        diff --side-by-side --color <(echo "$expected" | sort) <(echo "$result" | sort) | sed -e 's/\x1b\[[0-9;]*m//g' | while IFS= read -r line; do
+            if [[ "$line" =~ \| ]]; then
+                echo -e "\033[31m$line\033[0m"
+            else
+                echo "$line"
+            fi
+        done
     fi
 }
 
@@ -123,15 +127,20 @@ check_output "./ft_ssl md5 $md5" "MD5 ($md5) = $md5"
 
 SHA256=$(echo -n "42 is the answer" | shasum -a 256 | cut -d ' ' -f 1)
 check_output "./ft_ssl sha256 -q -s '42 is the answer'" "$SHA256"
-
-
 check_output 'echo -n "42 is the answer" | ./ft_ssl sha256' "(stdin)= $SHA256"
+
+check_output 'echo test | ./ft_ssl sha256' '(stdin)= f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2'
+check_output 'echo test | ./ft_ssl sha256 -q' 'f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2'
+
 dd if=/dev/random of=random_file bs=1M count=5 > /dev/null 2>&1
 SHA256=$(shasum -a 256 random_file | cut -d ' ' -f 1)
 mv random_file $SHA256
 check_output "./ft_ssl sha256 $SHA256" "SHA256 ($SHA256) = $SHA256"
-
-
+check_output "cat .gitignore | ./ft_ssl sha256" "(stdin)= af6d8d9ae298642865cdc7abff561bdc605507b391dcbcc9248f23288b7130da"
+check_output "./ft_ssl sha256 -q .gitignore .gitignore .gitignore" \
+"af6d8d9ae298642865cdc7abff561bdc605507b391dcbcc9248f23288b7130da
+af6d8d9ae298642865cdc7abff561bdc605507b391dcbcc9248f23288b7130da
+af6d8d9ae298642865cdc7abff561bdc605507b391dcbcc9248f23288b7130da"
 
 if [ "$1" == "--valgrind" ]; then
   echo_yellow "Running valgrind tests..."

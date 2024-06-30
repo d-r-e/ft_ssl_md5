@@ -137,7 +137,7 @@ void sha256file(const t_buffer *file_buffer, t_flags flags) {
 		sha256_update(&state, state.buffer, bytes_read);
 	}
 	sha256final(digest, &state);
-	print_digest(file_buffer, digest, flags, 16);
+	print_digest(file_buffer, digest, flags, 16, "SHA256");
 }
 
 void print_initial_digest(t_sha256_ctx *state) {
@@ -159,5 +159,5 @@ void sha256str(const t_buffer *buffer, t_flags flags) {
 		ptr = ptr->next;
 	}
 	sha256final(digest, &state);
-	print_digest(buffer, digest, flags, 32);
+	print_digest(buffer, digest, flags, 32, "SHA256");
 }
