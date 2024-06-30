@@ -131,6 +131,8 @@ rm -f file edge_case_file
 
 ####################################################
 
+check_output './ft_ssl sha256 -s '' -q' 'SHA256 ("") = e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+
 SHA256=$(echo -n "42 is the answer" | shasum -a 256 | cut -d ' ' -f 1)
 
 check_output 'echo -n "42 is the answer" | ./ft_ssl sha256' "(stdin)= $SHA256"

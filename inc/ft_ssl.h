@@ -41,7 +41,13 @@ typedef struct s_md5_ctx {
 
 typedef struct s_sha256_ctx {
 	uint32_t state[8];
-	uint64_t count;
+	union {
+		uint64_t count;
+		struct {
+			uint32_t count_low;
+			uint32_t count_high;
+		};
+	};
 	uint8_t buffer[64];
 } t_sha256_ctx;
 
@@ -61,6 +67,7 @@ void sha256(int argc, const char **argv);
 //* Common utils */
 void encode(uint8_t *output, uint32_t *input, size_t len);
 void decode(uint32_t *output, const uint8_t *input, size_t len);
+void print_digest(const t_buffer *buffer, uint8_t digest[16], t_flags flags, uint8_t len);
 
 //* MD5 *//
 void md5str(const t_buffer *buffer, t_flags flags);

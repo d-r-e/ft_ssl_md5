@@ -201,9 +201,9 @@ void sha256(int argc, const char **argv) {
 	}
 	ptr = string_buffers;
 	while (ptr) {
-		if (ptr->buffer)
+		if (ptr->buffer) {
 			sha256str(ptr, flags);
-		else if (ptr->filename) {
+		} else if (ptr->filename) {
 			sha256file(ptr, flags);
 		} else {
 			sha256stdin(flags);

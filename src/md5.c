@@ -137,24 +137,24 @@ static void md5_transform(uint32_t *state, const uint8_t block[64]) {
     ft_memset(x, 0, sizeof(x));
 }
 
-static void md5_update(t_md5_ctx *context, const uint8_t *input, size_t inputLen) {
+static void md5_update(t_md5_ctx *context, const uint8_t *input, size_t len) {
 	size_t i;
 	size_t index;
 	size_t part_len;
 
 	index = (context->count >> 3) & 0x3F;
-	context->count += ((uint64_t) inputLen << 3);
+	context->count += ((uint64_t) len << 3);
 	part_len = 64 - index;
-	if (inputLen >= part_len) {
+	if (len >= part_len) {
 		ft_memcpy(&context->buffer[index], input, part_len);
 		md5_transform(&context->A, context->buffer);
-		for (i = part_len; i + 63 < inputLen; i += 64)
+		for (i = part_len; i + 63 < len; i += 64)
 			md5_transform(&context->A, &input[i]);
 		index = 0;
 	} else {
 		i = 0;
 	}
-	ft_memcpy(&context->buffer[index], &input[i], inputLen - i);
+	ft_memcpy(&context->buffer[index], &input[i], len - i);
 }
 
 static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
@@ -162,7 +162,7 @@ static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
 	size_t index, pad_len;
 
 	encode(bits, (uint32_t *) &context->count, 8);
-	index = (context->count >> 3) & 0x3f;
+	index = (context->count >> 3) % 64;
 	pad_len = (index < 56) ? (56 - index) : (120 - index);
 	md5_update(context, PADDING, pad_len);
 	md5_update(context, bits, 8);
@@ -173,37 +173,37 @@ static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
 	ft_memset(context, 0, sizeof(*context));
 }
 
-static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_flags flags) {
-    char *format = "%02x";
-    char output[128];
-    int pos = 0;
+void print_digest(const t_buffer *buffer, uint8_t digest[16], t_flags flags, uint8_t len) {
+	char *format = "%02x";
+	char output[128];
+	int pos = 0;
 
-    if (flags.p && buffer && buffer->from_stdin && \
-    		ft_strlen(ft_strchr(buffer->buffer, '\n')) == 1)
-        *ft_strchr(buffer->buffer, '\n')= 0;
-    for (int i = 0; i < 16; i++)
-        pos += sprintf(output + pos, format, digest[i]);
-    if (flags.q) {
-    	if (flags.p && buffer && buffer->from_stdin)
-    		printf("%s\n", buffer->buffer);
-        printf("%s\n", output);
-    } else if (!flags.r) {
-        if (buffer && buffer->filename)
-            printf("MD5 (%s) = %s\n", buffer->filename, output);
-        else if (flags.p && buffer && buffer->buffer && buffer->from_stdin)
-            printf("(\"%s\")= %s\n", buffer->buffer, output);
-        else if (!flags.p && buffer && buffer->buffer && buffer->from_stdin)
-            printf("(stdin)= %s\n",  output);
-        else if (buffer && buffer->buffer)
-            printf("MD5 (\"%s\") = %s\n", buffer->buffer, output);
-    } else {
-        if (buffer && buffer->filename)
-            printf("%s %s\n",output, buffer->filename);
-    	else if (buffer && !buffer->from_stdin && buffer->buffer)
-    		printf("%s \"%s\"\n", output, buffer->buffer);
-        else if (buffer && buffer->buffer)
-            printf("(\"%s\")= %s\n", buffer->buffer, output);
-    }
+	if (flags.p && buffer && buffer->from_stdin && \
+			ft_strlen(ft_strchr(buffer->buffer, '\n')) == 1)
+		*ft_strchr(buffer->buffer, '\n')= 0;
+	for (int i = 0; i < len; i++)
+		pos += sprintf(output + pos, format, digest[i]);
+	if (flags.q) {
+		if (flags.p && buffer && buffer->from_stdin)
+			printf("%s\n", buffer->buffer);
+		printf("%s\n", output);
+	} else if (!flags.r) {
+		if (buffer && buffer->filename)
+			printf("MD5 (%s) = %s\n", buffer->filename, output);
+		else if (flags.p && buffer && buffer->buffer && buffer->from_stdin)
+			printf("(\"%s\")= %s\n", buffer->buffer, output);
+		else if (!flags.p && buffer && buffer->buffer && buffer->from_stdin)
+			printf("(stdin)= %s\n",  output);
+		else if (buffer && buffer->buffer)
+			printf("MD5 (\"%s\") = %s\n", buffer->buffer, output);
+	} else {
+		if (buffer && buffer->filename)
+			printf("%s %s\n",output, buffer->filename);
+		else if (buffer && !buffer->from_stdin && buffer->buffer)
+			printf("%s \"%s\"\n", output, buffer->buffer);
+		else if (buffer && buffer->buffer)
+			printf("(\"%s\")= %s\n", buffer->buffer, output);
+	}
 }
 
 void md5str(const t_buffer *buffer, t_flags flags) {
@@ -212,13 +212,12 @@ void md5str(const t_buffer *buffer, t_flags flags) {
 
     md5_init(&state);
     t_buffer *tmp = (t_buffer *) buffer;
-
     while (buffer) {
         md5_update(&state, (const uint8_t *) buffer->buffer, ft_strlen(buffer->buffer));
         buffer = buffer->next;
     }
     md5_final(digest, &state);
-    print_digest(tmp, digest, flags);
+    print_digest(tmp, digest, flags, 16);
 }
 
 
@@ -243,5 +242,5 @@ void md5file(const t_buffer *file_buffer, t_flags flags) {
         return;
     }
     md5_final(digest, &state);
-    print_digest(file_buffer, digest, flags);
+    print_digest(file_buffer, digest, flags, 16);
 }
