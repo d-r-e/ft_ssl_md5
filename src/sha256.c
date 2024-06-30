@@ -34,7 +34,7 @@ static const uint32_t k[64] = {
  */
 static
 void sha256init(t_sha256_ctx *state) {
-	ft_memset(state->buffer, 0, SHA256_BLOCK_SIZE);
+	ft_memset(state->buffer, 0, 64);
 	state->state[0] = 0x6a09e667;
 	state->state[1] = 0xbb67ae85;
 	state->state[2] = 0x3c6ef372;
@@ -95,7 +95,7 @@ static void sha256_update(t_sha256_ctx *state, const uint8_t *data, size_t len) 
 	if ((j + len) > 63) {
 		ft_memcpy(&state->buffer[j], data, (i = 64 - j));
 		sha256_transform(state, state->buffer);
-		for (; i + SHA256_BLOCK_SIZE <= len; i += SHA256_BLOCK_SIZE) {
+		for (; i + 63 < len; i += 64) {
 			sha256_transform(state, &data[i]);
 		}
 		j = 0;
