@@ -15,46 +15,48 @@ t_buffer *create_buffer(const char *buffer_content, const char *filename, bool f
     return new_buffer;
 }
 
-static
-int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer **string_buffers) {
-    bool found_file = false;
+static void append_buffer(t_buffer **list, t_buffer *new_buffer) {
+	if (*list == NULL) {
+		*list = new_buffer;
+	} else {
+		t_buffer *current = *list;
+		while (current->next != NULL) {
+			current = current->next;
+		}
+		current->next = new_buffer;
+	}
+}
 
-    for (int i = 2; i < argc; ++i) {
-        if (!found_file) {
-            if (ft_strcmp(argv[i], "-p") == 0) {
-                flags->p = true;
-            } else if (ft_strcmp(argv[i], "-q") == 0) {
-                flags->q = true;
-            } else if (ft_strcmp(argv[i], "-r") == 0) {
-                flags->r = true;
-            } else if (ft_strcmp(argv[i], "-s") == 0) {
-                flags->s = true;
-                if (i + 1 >= argc) {
-                    fprintf(stderr, "%s: %s: option requires an argument -- s\n", argv[0], argv[1]);
-                    return 0;
-                }
-                t_buffer *new_buffer = create_buffer(argv[i + 1], NULL, false);
-                if (*string_buffers == NULL) {
-                    *string_buffers = new_buffer;
-                } else {
-                    t_buffer *ptr = *string_buffers;
-                    while (ptr->next != NULL)
-                        ptr = ptr->next;
-                    ptr->next = new_buffer;
-                }
-                ++i;
-            } else {
-                found_file = true;
-                t_buffer *new_buffer = create_buffer(NULL, argv[i], false);
-                new_buffer->next = *string_buffers;
-                *string_buffers = new_buffer;
-            }
-        } else {
-            t_buffer *new_buffer = create_buffer(NULL, argv[i], false);
-            new_buffer->next = *string_buffers;
-            *string_buffers = new_buffer;
-        }
-    }
+static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer **string_buffers) {
+	bool found_file = false;
+
+	for (int i = 2; i < argc; i++) {
+		if (!found_file) {
+			if (ft_strcmp(argv[i], "-p") == 0) {
+				flags->p = true;
+			} else if (ft_strcmp(argv[i], "-q") == 0) {
+				flags->q = true;
+			} else if (ft_strcmp(argv[i], "-r") == 0) {
+				flags->r = true;
+			} else if (ft_strcmp(argv[i], "-s") == 0) {
+				flags->s = true;
+				if (i + 1 >= argc) {
+					fprintf(stderr, "%s: %s: option requires an argument -- s\n", argv[0], argv[1]);
+					return 0;
+				}
+				t_buffer *new_buffer = create_buffer(argv[i + 1], NULL, false);
+				append_buffer(string_buffers, new_buffer);
+				i++;
+			} else {
+				found_file = true;
+				t_buffer *new_buffer = create_buffer(NULL, argv[i], false);
+				append_buffer(string_buffers, new_buffer);
+			}
+		} else {
+			t_buffer *new_buffer = create_buffer(NULL, argv[i], false);
+			append_buffer(string_buffers, new_buffer);
+		}
+	}
 
     if (flags->p) { // if -p is set, we need to read from stdin
         t_buffer *new_buffer = create_buffer(NULL, NULL, true);

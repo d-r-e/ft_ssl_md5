@@ -195,17 +195,20 @@ static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags
     char output[128];
     int pos = 0;
 
-    if (flags.p && buffer && buffer->from_stdin && ft_strlen(ft_strchr(buffer->buffer, '\n')) == 1)
+    if (flags.p && buffer && buffer->from_stdin && \
+    		ft_strlen(ft_strchr(buffer->buffer, '\n')) == 1)
         *ft_strchr(buffer->buffer, '\n')= 0;
     for (int i = 0; i < 16; i++)
         pos += sprintf(output + pos, format, digest[i]);
     if (flags.q) {
+    	if (flags.p && buffer && buffer->from_stdin)
+    		printf("%s\n", buffer->buffer);
         printf("%s\n", output);
     } else if (!flags.r) {
         if (buffer && buffer->filename)
             printf("MD5 (%s) = %s\n", buffer->filename, output);
         else if (flags.p && buffer && buffer->buffer && buffer->from_stdin)
-            printf("(\"%s\") = %s\n", buffer->buffer, output);
+            printf("(\"%s\")= %s\n", buffer->buffer, output);
         else if (!flags.p && buffer && buffer->buffer && buffer->from_stdin)
             printf("(stdin)= %s\n",  output);
         else if (buffer && buffer->buffer)
@@ -213,6 +216,8 @@ static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags
     } else {
         if (buffer && buffer->filename)
             printf("%s %s\n",output, buffer->filename);
+    	else if (buffer && !buffer->from_stdin && buffer->buffer)
+    		printf("%s \"%s\"\n", output, buffer->buffer);
         else if (buffer && buffer->buffer)
             printf("(\"%s\")= %s\n", buffer->buffer, output);
     }
@@ -242,7 +247,7 @@ void md5file(const t_buffer *file_buffer, t_md5_flags flags) {
     uint8_t digest[16];
 
     if ((fd = open(file_buffer->filename, O_RDONLY)) < 0) {
-        dprintf(2, "ft_ssl: md5: %s: %s\n",file_buffer->filename, strerror(errno));
+        printf( "ft_ssl: md5: %s: %s\n",file_buffer->filename, strerror(errno));
         return;
     }
     md5_init(&state);
@@ -251,7 +256,7 @@ void md5file(const t_buffer *file_buffer, t_md5_flags flags) {
     }
     close(fd);
     if (bytes_read == -1) {
-        dprintf(2, "ft_ssl: md5: %s: %s\n", file_buffer->filename, strerror(errno));
+        printf( "ft_ssl: md5: %s: %s\n", file_buffer->filename, strerror(errno));
         return;
     }
     md5_final(digest, &state);

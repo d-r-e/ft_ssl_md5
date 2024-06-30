@@ -64,7 +64,7 @@ check_output './ft_ssl md5 file' 'MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 check_output './ft_ssl md5 -s "pity those that aren'\''t following baerista on spotify."' 'MD5 ("pity those that aren'\''t following baerista on spotify.") = a3c990a1964705d9bf0e602f44572f5f'
 
  # Edge cases
-check_output 'echo "be sure to handle edge cases carefully" | ./ft_ssl md5 -p file' '("be sure to handle edge cases carefully") = 3553dc7dc5963b583c056d1b9fa3349c
+check_output 'echo "be sure to handle edge cases carefully" | ./ft_ssl md5 -p file' '("be sure to handle edge cases carefully")= 3553dc7dc5963b583c056d1b9fa3349c
 MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 
  check_output 'echo "some of this will not make sense at first" | ./ft_ssl md5 file' 'MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
@@ -83,16 +83,33 @@ acbd18db4cc2f85cedef654fccc4a4d8 "foo"
 ft_ssl: md5: -s: No such file or directory
 ft_ssl: md5: bar: No such file or directory'
 
-# check_output 'echo "just to be extra clear" | ./ft_ssl md5 -r -q -p -s "foo" file' 'just to be extra clear
-# 3ba35f1ea0d170cb3b9a752e3360286c
-# acbd18db4cc2f85cedef654fccc4a4d8
-# 53d53ea94217b259c11a5a2d104ec58a'
+ check_output 'echo "just to be extra clear" | ./ft_ssl md5 -r -q -p -s "foo" file' 'just to be extra clear
+3ba35f1ea0d170cb3b9a752e3360286c
+acbd18db4cc2f85cedef654fccc4a4d8
+53d53ea94217b259c11a5a2d104ec58a'
 
-# # Additional edge cases
-# echo "another edge case" > edge_case_file
-# check_output './ft_ssl md5 edge_case_file' 'MD5 (edge_case_file) = d73a5bbbd40ef1c05c0b5a59f91fccc1'
-# check_output './ft_ssl md5 -s ""' 'MD5 ("") = d41d8cd98f00b204e9800998ecf8427e'
-# check_output 'echo -n "" | ./ft_ssl md5' '(stdin)= d41d8cd98f00b204e9800998ecf8427e'
+ # Additional edge cases
+ echo "another edge case" > edge_case_file
+ check_output './ft_ssl md5 edge_case_file' 'MD5 (edge_case_file) = c4f09c0dcac6fb390a9625936cb676d4'
+ check_output './ft_ssl md5 -s ""' 'MD5 ("") = d41d8cd98f00b204e9800998ecf8427e'
+ check_output 'echo -n "" | ./ft_ssl md5' '(stdin)= d41d8cd98f00b204e9800998ecf8427e'
+
+
+check_output 'echo "crazy edge case 1" | ./ft_ssl md5 -p -q -r file -s "test string"' 'crazy edge case 1
+f507a568c27ebf71fb6eea0aeb7ed4ad
+53d53ea94217b259c11a5a2d104ec58a
+ft_ssl: md5: -s: No such file or directory
+ft_ssl: md5: test string: No such file or directory'
+
+check_output 'echo -n "crazy edge case 2" | ./ft_ssl md5 -p -q -r -s "test string" file' 'crazy edge case 2
+39cb7603517969f2020514c661438aa0
+6f8db599de986fab7a21625b7916589c
+53d53ea94217b259c11a5a2d104ec58a'
+
+check_output 'cat .gitignore | ./ft_ssl md5 -q ' '3703fa5ed0438b06c8e7230afbe3e564'
+check_output './ft_ssl md5 -q .gitignore .gitignore .gitignore' '3703fa5ed0438b06c8e7230afbe3e564
+3703fa5ed0438b06c8e7230afbe3e564
+3703fa5ed0438b06c8e7230afbe3e564'
 
 if [ "$1" == "--valgrind" ]; then
   echo_yellow "Running valgrind tests..."

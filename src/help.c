@@ -13,8 +13,5 @@
 #include "ft_ssl.h"
 
 void usage(const char **argv){
-    const char *msg = ": [ -p -q -r -s] [..args]\n";
-
-    write(1, argv[0], ft_strlen(argv[0]));
-    write(1, msg, ft_strlen(msg));
+    dprintf(2,"%s: %s\n", argv[0], ": [ -p -q -r -s] [..args]\n");
 }
