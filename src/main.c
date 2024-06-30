@@ -1,8 +1,8 @@
 #include <ft_ssl.h>
 
 static int execute_command(int argc, const char **argv) {
-	t_command commands[] = {{"md5", exec_command},
-	                        {"sha256", (void (*)(int, const char **)) NULL},
+	t_command commands[] = {{"md5", md5},
+	                        {"sha256", sha256},
 	                        {NULL, NULL}};
 
 	for (int i = 0; commands[i].name; i++) {

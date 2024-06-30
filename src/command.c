@@ -27,7 +27,7 @@ static void append_buffer(t_buffer **list, t_buffer *new_buffer) {
 	}
 }
 
-static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer **string_buffers) {
+static int parse_flags(int argc, const char **argv, t_flags *flags, t_buffer **string_buffers) {
 	bool found_file = false;
 
 	for (int i = 2; i < argc; i++) {
@@ -107,12 +107,12 @@ void append_to_buffer(t_buffer **head, const char *data, size_t len) {
 }
 
 static
-void from_string(t_md5_flags flags, t_buffer string_buffer) {
-    md5main(&string_buffer, flags);
+void from_string(t_flags flags, t_buffer string_buffer) {
+    md5str(&string_buffer, flags);
 }
 
 static
-void from_stdin(t_md5_flags flags) {
+void from_stdin(t_flags flags) {
 	char buffer[BUFFER_SIZE];
 	ssize_t bytes;
 	bool read_stdin = false;
@@ -139,12 +139,35 @@ void from_stdin(t_md5_flags flags) {
 }
 
 static
-void from_file(t_md5_flags flags, t_buffer file_buffer) {
-    md5file(&file_buffer, flags);
+void sha256stdin(t_flags flags) {
+	char buffer[BUFFER_SIZE];
+	ssize_t bytes;
+	bool read_stdin = false;
+	t_buffer *head = NULL;
+
+	while ((bytes = read(STDIN_FILENO, buffer, BUFFER_SIZE)) > 0) {
+		append_to_buffer(&head, buffer, bytes);
+	}
+	if (!head) {
+		append_to_buffer(&head, "", 0);
+	}
+	read_stdin = true;
+	if (read_stdin && head) {
+		head->from_stdin = true;
+		sha256str(head, flags);
+	}
+
+	t_buffer *current = head;
+	while (current != NULL) {
+		t_buffer *next = current->next;
+		free(current);
+		current = next;
+	}
 }
 
-void exec_command(int argc, const char **argv) {
-    t_md5_flags flags = {false, false, false, false};
+
+void md5(int argc, const char **argv) {
+    t_flags flags = {false, false, false, false};
     t_buffer *string_buffers = NULL;
     t_buffer *ptr;
 
@@ -155,13 +178,38 @@ void exec_command(int argc, const char **argv) {
     ptr = string_buffers;
     while (ptr) {
         if (ptr->buffer)
-            from_string(flags, *ptr);
+            md5str(ptr, flags);
         else if (ptr->filename) {
-            from_file(flags, *ptr);
+            md5file(ptr, flags);
         } else {
             from_stdin(flags);
         }
         ptr = ptr->next;
     }
     clear_list(string_buffers);
+}
+
+
+void sha256(int argc, const char **argv) {
+	t_flags flags = {false, false, false, false};
+	t_buffer *string_buffers = NULL;
+	t_buffer *ptr;
+
+	if (!parse_flags(argc, argv, &flags, &string_buffers)) {
+		clear_list(string_buffers);
+		return;
+	}
+	ptr = string_buffers;
+	while (ptr) {
+		if (ptr->buffer)
+			sha256str(ptr, flags);
+		else if (ptr->filename) {
+			sha256file(ptr, flags);
+		} else {
+			sha256stdin(flags);
+		}
+		ptr = ptr->next;
+	}
+	clear_list(string_buffers);
+
 }

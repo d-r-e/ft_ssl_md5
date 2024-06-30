@@ -54,23 +54,6 @@ static void md5_init(t_md5_ctx *state) {
     ft_memset(state->buffer, 0, 64);
 }
 
-static void encode(uint8_t *output, uint32_t *input, size_t len) {
-    size_t i, j;
-    for (i = 0, j = 0; j < len; i++, j += 4) {
-        output[j] = (uint8_t) (input[i] & 0xff);
-        output[j + 1] = (uint8_t) ((input[i] >> 8) & 0xff);
-        output[j + 2] = (uint8_t) ((input[i] >> 16) & 0xff);
-        output[j + 3] = (uint8_t) ((input[i] >> 24) & 0xff);
-    }
-}
-
-static void decode(uint32_t *output, const uint8_t *input, size_t len) {
-    size_t i, j;
-    for (i = 0, j = 0; j < len; i++, j += 4) {
-        output[i] = ((uint32_t) input[j]) | (((uint32_t) input[j + 1]) << 8) |
-                    (((uint32_t) input[j + 2]) << 16) | (((uint32_t) input[j + 3]) << 24);
-    }
-}
 
 static void md5_transform(uint32_t *state, const uint8_t block[64]) {
     uint32_t a = state[0], b = state[1], c = state[2], d = state[3];
@@ -190,7 +173,7 @@ static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
 	ft_memset(context, 0, sizeof(*context));
 }
 
-static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags flags) {
+static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_flags flags) {
     char *format = "%02x";
     char output[128];
     int pos = 0;
@@ -223,7 +206,7 @@ static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags
     }
 }
 
-void md5main(const t_buffer *buffer, t_md5_flags flags) {
+void md5str(const t_buffer *buffer, t_flags flags) {
     t_md5_ctx state;
     uint8_t digest[16];
 
@@ -239,7 +222,7 @@ void md5main(const t_buffer *buffer, t_md5_flags flags) {
 }
 
 
-void md5file(const t_buffer *file_buffer, t_md5_flags flags) {
+void md5file(const t_buffer *file_buffer, t_flags flags) {
     int fd;
     ssize_t bytes_read;
     uint8_t buffer[BUFFER_SIZE];

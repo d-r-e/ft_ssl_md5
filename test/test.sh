@@ -129,5 +129,8 @@ check_output "./ft_ssl md5 $md5" "MD5 ($md5) = $md5"
 rm -f $md5
 rm -f file edge_case_file
 
-# Summary
-echo_green "All tests completed."
+####################################################
+
+SHA256=$(echo -n "42 is the answer" | shasum -a 256 | cut -d ' ' -f 1)
+
+check_output 'echo -n "42 is the answer" | ./ft_ssl sha256' "(stdin)= $SHA256"

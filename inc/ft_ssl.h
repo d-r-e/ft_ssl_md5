@@ -24,7 +24,7 @@ typedef struct s_md5_flags {
 	bool q;
 	bool r;
 	bool s;
-} t_md5_flags;
+} t_flags;
 
 typedef struct s_buffer {
 	const char *buffer;
@@ -39,6 +39,12 @@ typedef struct s_md5_ctx {
 	uint8_t buffer[64];
 } t_md5_ctx;
 
+typedef struct s_sha256_ctx {
+	uint32_t state[8];
+	uint64_t count;
+	uint8_t buffer[64];
+} t_sha256_ctx;
+
 //* Our beloved libft functions *//
 int ft_strcmp(const char *s1, const char *s2);
 size_t ft_strlen(const char *s);
@@ -49,12 +55,19 @@ char *ft_strndup(const char *s, size_t n);
 
 //* Main *//
 void usage(const char **argv);
-void exec_command(int argc, const char **argv);
+void md5(int argc, const char **argv);
+void sha256(int argc, const char **argv);
+
+//* Common utils */
+void encode(uint8_t *output, uint32_t *input, size_t len);
+void decode(uint32_t *output, const uint8_t *input, size_t len);
 
 //* MD5 *//
-void md5main(const t_buffer *buffer, t_md5_flags flags);
-void md5file(const t_buffer *file_buffer, t_md5_flags flags);
+void md5str(const t_buffer *buffer, t_flags flags);
+void md5file(const t_buffer *file_buffer, t_flags flags);
 
 //* SHA256 *//
+void sha256str(const t_buffer *buffer, t_flags flags);
+void sha256file(const t_buffer *file_buffer, t_flags flags);
 
 #endif
