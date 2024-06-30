@@ -72,7 +72,7 @@ static void decode(uint32_t *output, const uint8_t *input, size_t len) {
     }
 }
 
-static void md5_transform(uint32_t state[4], const uint8_t block[64]) {
+static void md5_transform(uint32_t *state, const uint8_t block[64]) {
     uint32_t a = state[0], b = state[1], c = state[2], d = state[3];
     uint32_t x[16];
 
@@ -155,38 +155,39 @@ static void md5_transform(uint32_t state[4], const uint8_t block[64]) {
 }
 
 static void md5_update(t_md5_ctx *context, const uint8_t *input, size_t inputLen) {
-    size_t i, index, part_len;
+	size_t i;
+	size_t index;
+	size_t part_len;
 
-    index = (context->count >> 3) & 0x3F;
-    context->count += ((uint64_t) inputLen << 3);
-
-    part_len = 64 - index;
-    if (inputLen >= part_len) {
-        ft_memcpy(&context->buffer[index], input, part_len);
-        md5_transform((uint32_t *) &context->A, context->buffer);
-        for (i = part_len; i + 63 < inputLen; i += 64)
-            md5_transform((uint32_t *) &context->A, &input[i]);
-        index = 0;
-    } else {
-        i = 0;
-    }
-    ft_memcpy(&context->buffer[index], &input[i], inputLen - i);
+	index = (context->count >> 3) & 0x3F;
+	context->count += ((uint64_t) inputLen << 3);
+	part_len = 64 - index;
+	if (inputLen >= part_len) {
+		ft_memcpy(&context->buffer[index], input, part_len);
+		md5_transform(&context->A, context->buffer);
+		for (i = part_len; i + 63 < inputLen; i += 64)
+			md5_transform(&context->A, &input[i]);
+		index = 0;
+	} else {
+		i = 0;
+	}
+	ft_memcpy(&context->buffer[index], &input[i], inputLen - i);
 }
 
 static void md5_final(uint8_t digest[16], t_md5_ctx *context) {
-    uint8_t bits[8];
-    size_t index, pad_len;
+	uint8_t bits[8];
+	size_t index, pad_len;
 
-    encode(bits, (uint32_t *) &context->count, 8);
-    index = (context->count >> 3) & 0x3f;
-    pad_len = (index < 56) ? (56 - index) : (120 - index);
-    md5_update(context, PADDING, pad_len);
-    md5_update(context, bits, 8);
-    encode(digest, &context->A, 4);
-    encode(digest + 4, &context->B, 4);
-    encode(digest + 8, &context->C, 4);
-    encode(digest + 12, &context->D, 4);
-    ft_memset(context, 0, sizeof(*context));
+	encode(bits, (uint32_t *) &context->count, 8);
+	index = (context->count >> 3) & 0x3f;
+	pad_len = (index < 56) ? (56 - index) : (120 - index);
+	md5_update(context, PADDING, pad_len);
+	md5_update(context, bits, 8);
+	encode(digest, &context->A, 4);
+	encode(digest + 4, &context->B, 4);
+	encode(digest + 8, &context->C, 4);
+	encode(digest + 12, &context->D, 4);
+	ft_memset(context, 0, sizeof(*context));
 }
 
 static void print_digest(const t_buffer *buffer, uint8_t digest[16], t_md5_flags flags) {

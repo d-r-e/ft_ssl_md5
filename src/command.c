@@ -157,7 +157,6 @@ void exec_command(int argc, const char **argv) {
         else if (ptr->filename) {
             from_file(flags, *ptr);
         } else {
-	        // printf("From stdin\n");
             from_stdin(flags);
         }
         ptr = ptr->next;
