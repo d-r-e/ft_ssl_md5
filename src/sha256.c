@@ -121,16 +121,18 @@ static void sha256final(uint8_t *digest, t_sha256_ctx *state) {
 		digest[i] = (uint8_t)((state->state[i >> 2] >> ((3 - (i & 3)) * 8)) & 255);
 }
 
-
-
 void sha256file(const t_buffer *file_buffer, t_flags flags) {
 	t_sha256_ctx state;
-	//	uint8_t digest[32];
-
+	uint8_t digest[32];
 	sha256init(&state);
 
-	(void) flags;
-	(void) file_buffer;
+	t_buffer *ptr = (t_buffer *)file_buffer;
+	while (ptr) {
+		sha256_update(&state, (const uint8_t *)ptr->buffer, ft_strlen(ptr->buffer));
+		ptr = ptr->next;
+	}
+	sha256final(digest, &state);
+	print_digest(file_buffer, digest, flags, 32);
 }
 
 void print_initial_digest(t_sha256_ctx *state) {

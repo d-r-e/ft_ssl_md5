@@ -111,6 +111,28 @@ check_output './ft_ssl md5 -q .gitignore .gitignore .gitignore' '3703fa5ed0438b0
 3703fa5ed0438b06c8e7230afbe3e564
 3703fa5ed0438b06c8e7230afbe3e564'
 
+
+
+dd if=/dev/random of=random_file bs=1M count=5 > /dev/null 2>&1
+md5=$(md5sum random_file | cut -d ' ' -f 1)
+mv random_file $md5
+check_output "./ft_ssl md5 $md5" "MD5 ($md5) = $md5"
+
+
+####################################################
+
+SHA256=$(echo -n "42 is the answer" | shasum -a 256 | cut -d ' ' -f 1)
+check_output "./ft_ssl sha256 -q -s '42 is the answer'" "$SHA256"
+
+
+check_output 'echo -n "42 is the answer" | ./ft_ssl sha256' "(stdin)= $SHA256"
+dd if=/dev/random of=random_file bs=1M count=5 > /dev/null 2>&1
+SHA256=$(shasum -a 256 random_file | cut -d ' ' -f 1)
+mv random_file $SHA256
+check_output "./ft_ssl sha256 $SHA256" "SHA256 ($SHA256) = $SHA256"
+
+
+
 if [ "$1" == "--valgrind" ]; then
   echo_yellow "Running valgrind tests..."
   check_valgrind "./ft_ssl md5 -s ''"
@@ -120,19 +142,12 @@ if [ "$1" == "--valgrind" ]; then
   check_valgrind "./ft_ssl md5 edge_case_file"
   check_valgrind "echo -n '' | ./ft_ssl md5 -r -q file -s test"
 
+  check_valgrind "./ft_ssl sha256 -s ''"
+  check_valgrind "./ft_ssl sha256 file"
+  check_valgrind "./ft_ssl sha256 -s 'test'"
+  check_valgrind "./ft_ssl sha256 -s '' -s bad -s wrong file1 file2 file3"
+  check_valgrind "./ft_ssl sha256 edge_case_file"
 fi
 
-dd if=/dev/random of=random_file bs=1M count=5 > /dev/null 2>&1
-md5=$(md5sum random_file | cut -d ' ' -f 1)
-mv random_file $md5
-check_output "./ft_ssl md5 $md5" "MD5 ($md5) = $md5"
 rm -f $md5
-rm -f file edge_case_file
-
-####################################################
-
-check_output './ft_ssl sha256 -s '' -q' 'SHA256 ("") = e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
-
-SHA256=$(echo -n "42 is the answer" | shasum -a 256 | cut -d ' ' -f 1)
-
-check_output 'echo -n "42 is the answer" | ./ft_ssl sha256' "(stdin)= $SHA256"
+rm -f file edge_case_file $SHA256
