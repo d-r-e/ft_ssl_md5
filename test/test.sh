@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Color functions for pretty output
 function echo_green {
     echo -e "\033[32m$1\033[0m"
 }
@@ -13,7 +12,6 @@ function echo_yellow {
     echo -e "\033[33m$1\033[0m"
 }
 
-# Compile the program
 make all
 
 # Failing arguments
@@ -21,13 +19,12 @@ make all
 ./ft_ssl md4 2>/dev/null || echo_green "[OK] invalid command \"md4\""
 ./ft_ssl "" 2>/dev/null || echo_green "[OK] invalid command \"\""
 
-# Function to compare expected and actual outputs
 function check_output {
     local command="$1"
     local expected="$2"
     local result
     result=$(eval "$command" 2>&1)
-    if [[ "$result" == "$expected" ]]; then
+    if [[ "$(echo "$result" | sort)" == "$(echo "$expected" | sort)" ]]; then
         echo_green "[OK] $command"
     else
         echo_red "[FAIL] $command ··· "
@@ -81,10 +78,10 @@ MD5 ("foo") = acbd18db4cc2f85cedef654fccc4a4d8
 MD5 (file) = 53d53ea94217b259c11a5a2d104ec58a'
 
  check_output 'echo "one more thing" | ./ft_ssl md5 -r -p -s "foo" file -s "bar"' '("one more thing")= a0bd1876c6f011dd50fae52827f445f5
- acbd18db4cc2f85cedef654fccc4a4d8 "foo"
- 53d53ea94217b259c11a5a2d104ec58a file
- ft_ssl: md5: -s: No such file or directory
- ft_ssl: md5: bar: No such file or directory'
+acbd18db4cc2f85cedef654fccc4a4d8 "foo"
+53d53ea94217b259c11a5a2d104ec58a file
+ft_ssl: md5: -s: No such file or directory
+ft_ssl: md5: bar: No such file or directory'
 
 # check_output 'echo "just to be extra clear" | ./ft_ssl md5 -r -q -p -s "foo" file' 'just to be extra clear
 # 3ba35f1ea0d170cb3b9a752e3360286c

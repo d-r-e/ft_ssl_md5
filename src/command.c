@@ -1,6 +1,7 @@
 #include "ft_ssl.h"
 
-static t_buffer *create_buffer(const char *buffer_content, const char *filename, bool from_stdin) {
+static
+t_buffer *create_buffer(const char *buffer_content, const char *filename, bool from_stdin) {
     t_buffer *new_buffer; ;
 
     if (!(new_buffer = malloc(sizeof(t_buffer)))) {
@@ -14,50 +15,54 @@ static t_buffer *create_buffer(const char *buffer_content, const char *filename,
     return new_buffer;
 }
 
-static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer **string_buffers) {
-    for (int i = 2; i < argc; i++) {
-        if (ft_strcmp(argv[i], "-p") == 0) {
-            flags->p = true;
-        } else if (ft_strcmp(argv[i], "-q") == 0) {
-            flags->q = true;
-        } else if (ft_strcmp(argv[i], "-r") == 0) {
-            flags->r = true;
-        } else if (ft_strcmp(argv[i], "-s") == 0) {
-            flags->s = true;
-            if (i + 1 >= argc) {
-                fprintf(stderr, "%s: %s: option requires an argument -- s\n", argv[0], argv[1]);
-                return 0;
-            }
-            t_buffer *new_buffer = create_buffer(argv[i + 1], NULL, false);
-            if (*string_buffers == NULL) {
-                *string_buffers = new_buffer;
-            } else {
-                t_buffer *ptr = *string_buffers;
-                while (ptr->next != NULL) {
-                    ptr = ptr->next;
+static
+int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer **string_buffers) {
+    bool found_file = false;
+
+    for (int i = 2; i < argc; ++i) {
+        if (!found_file) {
+            if (ft_strcmp(argv[i], "-p") == 0) {
+                flags->p = true;
+            } else if (ft_strcmp(argv[i], "-q") == 0) {
+                flags->q = true;
+            } else if (ft_strcmp(argv[i], "-r") == 0) {
+                flags->r = true;
+            } else if (ft_strcmp(argv[i], "-s") == 0) {
+                flags->s = true;
+                if (i + 1 >= argc) {
+                    fprintf(stderr, "%s: %s: option requires an argument -- s\n", argv[0], argv[1]);
+                    return 0;
                 }
-                ptr->next = new_buffer;
-            }
-            i++;
-        } else {
-            if (argv[i][0] == '-') {
-                printf("%s: %s: illegal option -- %c\n", argv[0], argv[1], argv[i][1]);
-                return 0;
+                t_buffer *new_buffer = create_buffer(argv[i + 1], NULL, false);
+                if (*string_buffers == NULL) {
+                    *string_buffers = new_buffer;
+                } else {
+                    t_buffer *ptr = *string_buffers;
+                    while (ptr->next != NULL)
+                        ptr = ptr->next;
+                    ptr->next = new_buffer;
+                }
+                ++i;
             } else {
+                found_file = true;
                 t_buffer *new_buffer = create_buffer(NULL, argv[i], false);
                 new_buffer->next = *string_buffers;
                 *string_buffers = new_buffer;
             }
+        } else {
+            t_buffer *new_buffer = create_buffer(NULL, argv[i], false);
+            new_buffer->next = *string_buffers;
+            *string_buffers = new_buffer;
         }
     }
 
-    if (flags->p) {
+    if (flags->p) { // if -p is set, we need to read from stdin
         t_buffer *new_buffer = create_buffer(NULL, NULL, true);
         new_buffer->next = *string_buffers;
         *string_buffers = new_buffer;
     }
 
-    if (!flags->p && !flags->s && *string_buffers == NULL) {
+    if (!flags->p && !flags->s && *string_buffers == NULL) { // stdin by default
         t_buffer *new_buffer = create_buffer(NULL, NULL, true);
         *string_buffers = new_buffer;
     }
@@ -65,7 +70,8 @@ static int parse_flags(int argc, const char **argv, t_md5_flags *flags, t_buffer
     return 1;
 }
 
-static void clear_list(t_buffer *list) {
+static
+void clear_list(t_buffer *list) {
     t_buffer *tmp;
     while (list) {
         tmp = list;
@@ -74,6 +80,7 @@ static void clear_list(t_buffer *list) {
     }
 }
 
+static
 void append_to_buffer(t_buffer **head, const char *data, size_t len) {
     t_buffer *new_node = malloc(sizeof(t_buffer));
     if (new_node == NULL) {
@@ -97,10 +104,12 @@ void append_to_buffer(t_buffer **head, const char *data, size_t len) {
     }
 }
 
+static
 void from_string(t_md5_flags flags, t_buffer string_buffer) {
     md5main(&string_buffer, flags);
 }
 
+static
 void from_stdin(t_md5_flags flags) {
 	char buffer[BUFFER_SIZE];
 	ssize_t bytes;
@@ -127,7 +136,7 @@ void from_stdin(t_md5_flags flags) {
 	}
 }
 
-
+static
 void from_file(t_md5_flags flags, t_buffer file_buffer) {
     md5file(&file_buffer, flags);
 }
