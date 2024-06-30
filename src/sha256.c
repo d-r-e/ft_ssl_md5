@@ -90,10 +90,10 @@ static void sha256_transform(t_sha256_ctx *ctx, const uint8_t data[]) {
 static void sha256_update(t_sha256_ctx *state, const uint8_t *data, size_t len) {
 	size_t i, j;
 
-	j = (state->count >> 3) % SHA256_BLOCK_SIZE;
+	j = (state->count >> 3) & 63;
 	state->count += len << 3;
-	if ((j + len) > SHA256_BLOCK_SIZE) {
-		ft_memcpy(&state->buffer[j], data, (i = SHA256_BLOCK_SIZE - j));
+	if ((j + len) > 63) {
+		ft_memcpy(&state->buffer[j], data, (i = 64 - j));
 		sha256_transform(state, state->buffer);
 		for (; i + SHA256_BLOCK_SIZE <= len; i += SHA256_BLOCK_SIZE) {
 			sha256_transform(state, &data[i]);
@@ -112,7 +112,6 @@ static void sha256final(uint8_t *digest, t_sha256_ctx *state) {
 
 	for (i = 0; i < 8; i++)
 		finalcount[i] = (uint8_t)((state->count >> ((7 - i) * 8)) & 255);
-
 	sha256_update(state, (uint8_t *)"\200", 1);
 	while ((state->count & 504) != 448)
 		sha256_update(state, (uint8_t *)"\0", 1);
