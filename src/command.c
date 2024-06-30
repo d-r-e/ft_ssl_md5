@@ -80,7 +80,7 @@ void append_to_buffer(t_buffer **head, const char *data, size_t len) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    new_node->buffer = strndup(data, len);
+    new_node->buffer = ft_strndup(data, len);
     if (new_node->buffer == NULL) {
         perror("strndup");
         exit(EXIT_FAILURE);
@@ -108,7 +108,7 @@ void from_stdin(t_md5_flags flags) {
     bool read_stdin = false;
     t_buffer *head = NULL;
 
-    while ((bytes_read = getline(&buffer, &buffer_size, stdin)) != -1) {
+    while ((bytes_read = getline(&buffer, &buffer_size, stdin)) > 0) {
         append_to_buffer(&head, buffer, bytes_read);
         read_stdin = true;
     }

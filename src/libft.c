@@ -25,7 +25,7 @@ int ft_strcmp(const char *s1, const char *s2){
 }
 
 
-size_t ft_strlen(const char *s){
+size_t   ft_strlen(const char *s){
     size_t len;
 
     len = 0;
@@ -33,6 +33,21 @@ size_t ft_strlen(const char *s){
         len++;
     }
     return len;
+}
+
+char    *ft_strndup(const char *s, size_t n){
+    char *dup;
+    size_t i;
+
+    i = 0;
+    if (!(dup = malloc(n + 1)))
+        return NULL;
+    while (i < n && s[i]){
+        dup[i] = s[i];
+        i++;
+    }
+    dup[i] = '\0';
+    return dup;
 }
 
 void ft_memset(void *b, int c, size_t len){

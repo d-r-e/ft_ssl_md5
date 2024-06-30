@@ -20,7 +20,6 @@ make all
 ./ft_ssl 2>/dev/null || echo_green "[OK] no arguments"
 ./ft_ssl md4 2>/dev/null || echo_green "[OK] invalid command \"md4\""
 ./ft_ssl "" 2>/dev/null || echo_green "[OK] invalid command \"\""
-./ft_ssl md5 -s ''
 
 # Function to compare expected and actual outputs
 function check_output {
@@ -47,6 +46,8 @@ function check_valgrind {
         echo_yellow "     valgrind --leak-check=full --show-leaks=all --error-exitcode=1 $command"
     fi
 }
+
+check_output 'echo -n '' | ./ft_ssl md5' '(stdin)= d41d8cd98f00b204e9800998ecf8427e'
 
 # Tests with expected output
 check_output 'echo -n "42 is nice" | ./ft_ssl md5' "(stdin)= 0029a98ee90fdb85d70924d44d3c9e75"
