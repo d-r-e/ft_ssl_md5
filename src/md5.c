@@ -242,6 +242,7 @@ void md5file(const t_buffer *file_buffer, t_flags flags) {
 	}
 	close(fd);
 	if (bytes_read == -1) {
+        close(fd);
 		printf("ft_ssl: md5: %s: %s\n", file_buffer->filename, strerror(errno));
 		return;
 	}

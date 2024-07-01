@@ -129,14 +129,20 @@ void sha256file(const t_buffer *file_buffer, t_flags flags) {
 	uint8_t digest[32];
 
 	if ((fd = open(file_buffer->filename, O_RDONLY)) < 0) {
-		perror(file_buffer->filename);
+		printf("ft_ssl: sha256: %s: %s\n", file_buffer->filename, strerror(errno));
 		return;
 	}
 	sha256init(&state);
 	while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0) {
 		sha256_update(&state, buffer, bytes_read);
 	}
-	print_digest(file_buffer, digest, flags, 16, "SHA256");
+    if (bytes_read < 0){
+        printf("ft_ssl: sha256: %s: %s\n", file_buffer->filename, strerror(errno));
+        close(fd);
+        return;
+    }
+    sha256final(digest, &state);
+	print_digest(file_buffer, digest, flags, 32, "SHA256");
 	close(fd);
 }
 
