@@ -141,6 +141,10 @@ check_output "./ft_ssl sha256 -q .gitignore .gitignore .gitignore" "af6d8d9ae298
 af6d8d9ae298642865cdc7abff561bdc605507b391dcbcc9248f23288b7130da
 af6d8d9ae298642865cdc7abff561bdc605507b391dcbcc9248f23288b7130da"
 
+# extensive sha256 tests with flags
+
+
+
 if [ "$1" == "--valgrind" ]; then
   echo_yellow "Running valgrind tests..."
   check_valgrind "./ft_ssl md5 -s ''"

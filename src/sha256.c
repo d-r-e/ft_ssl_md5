@@ -1,14 +1,14 @@
 #include <ft_ssl.h>
 
 # define ROTATE_RIGHT(x, n) (((x) >> (n)) | ((x) << (32-(n))))
-#define CH(x,y,z) (((x) & (y)) ^ (~(x) & (z)))
-#define MAJ(x,y,z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-#define EP0(x) (ROTATE_RIGHT(x, 2) ^ ROTATE_RIGHT(x, 13) ^ ROTATE_RIGHT(x, 22))
-#define EP1(x) (ROTATE_RIGHT(x, 6) ^ ROTATE_RIGHT(x, 11) ^ ROTATE_RIGHT(x, 25))
-#define SIG0(x) (ROTATE_RIGHT(x, 7) ^ ROTATE_RIGHT(x, 18) ^ ((x) >> 3))
-#define SIG1(x) (ROTATE_RIGHT(x, 17) ^ ROTATE_RIGHT(x, 19) ^ ((x) >> 10))
+# define CH(x,y,z) (((x) & (y)) ^ (~(x) & (z)))
+# define MAJ(x,y,z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+# define EP0(x) (ROTATE_RIGHT(x, 2) ^ ROTATE_RIGHT(x, 13) ^ ROTATE_RIGHT(x, 22))
+# define EP1(x) (ROTATE_RIGHT(x, 6) ^ ROTATE_RIGHT(x, 11) ^ ROTATE_RIGHT(x, 25))
+# define SIG0(x) (ROTATE_RIGHT(x, 7) ^ ROTATE_RIGHT(x, 18) ^ ((x) >> 3))
+# define SIG1(x) (ROTATE_RIGHT(x, 17) ^ ROTATE_RIGHT(x, 19) ^ ((x) >> 10))
 
-#define SHA256_BLOCK_SIZE 64
+# define SHA256_BLOCK_SIZE 64
 
 static const uint32_t k[64] = {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
@@ -29,11 +29,8 @@ static const uint32_t k[64] = {
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-/**
- * https://www.openssl.org/docs/manmaster/man3/SHA256_Init.html
- */
-static
-void sha256init(t_sha256_ctx *state) {
+
+static void sha256init(t_sha256_ctx *state) {
 	ft_memset(state->buffer, 0, 64);
 	state->state[0] = 0x6a09e667;
 	state->state[1] = 0xbb67ae85;
@@ -44,7 +41,6 @@ void sha256init(t_sha256_ctx *state) {
 	state->state[6] = 0x1f83d9ab;
 	state->state[7] = 0x5be0cd19;
 	state->count = 0;
-	(void)k;
 }
 
 static void sha256_transform(t_sha256_ctx *ctx, const uint8_t data[]) {
@@ -88,15 +84,17 @@ static void sha256_transform(t_sha256_ctx *ctx, const uint8_t data[]) {
 }
 
 static void sha256_update(t_sha256_ctx *state, const uint8_t *data, size_t len) {
-	size_t i, j;
+	size_t i;
+	size_t j;
 
 	j = (state->count >> 3) & 63;
 	state->count += len << 3;
 	if ((j + len) > 63) {
 		ft_memcpy(&state->buffer[j], data, (i = 64 - j));
 		sha256_transform(state, state->buffer);
-		for (; i + 63 < len; i += 64) {
+		while (i + 63 < len) {
 			sha256_transform(state, &data[i]);
+			i += 64;
 		}
 		j = 0;
 	} else {
@@ -107,10 +105,10 @@ static void sha256_update(t_sha256_ctx *state, const uint8_t *data, size_t len) 
 
 
 static void sha256final(uint8_t *digest, t_sha256_ctx *state) {
-	uint8_t finalcount[8];
-	uint32_t i;
+	uint8_t		finalcount[8];
+	uint32_t	i;
 
-	for (i = 0; i < 8; i++)
+	for (i = 0; i < 8; ++i)
 		finalcount[i] = (uint8_t)((state->count >> ((7 - i) * 8)) & 255);
 	sha256_update(state, (uint8_t *)"\200", 1);
 	while ((state->count & 504) != 448)
@@ -122,11 +120,11 @@ static void sha256final(uint8_t *digest, t_sha256_ctx *state) {
 }
 
 void sha256file(const t_buffer *file_buffer, t_flags flags) {
-	int fd;
-	ssize_t bytes_read;
-	uint8_t buffer[BUFFER_SIZE];
-	t_sha256_ctx state;
-	uint8_t digest[32];
+	int				fd;
+	ssize_t			bytes_read;
+	uint8_t			buffer[BUFFER_SIZE];
+	t_sha256_ctx 	state;
+	uint8_t			digest[32];
 
 	if ((fd = open(file_buffer->filename, O_RDONLY)) < 0) {
 		printf("ft_ssl: sha256: %s: %s\n", file_buffer->filename, strerror(errno));
@@ -146,19 +144,12 @@ void sha256file(const t_buffer *file_buffer, t_flags flags) {
 	close(fd);
 }
 
-void print_initial_digest(t_sha256_ctx *state) {
-	for (int i = 0; i < 8; i++) {
-		printf("%08x", state->state[i]);
-	}
-	printf("\n");
-}
-
 
 void sha256str(const t_buffer *buffer, t_flags flags) {
-	t_sha256_ctx state;
-	uint8_t digest[32];
+	t_sha256_ctx	state;
+	uint8_t			digest[32];
+	
 	sha256init(&state);
-
 	t_buffer *ptr = (t_buffer *)buffer;
 	while (ptr) {
 		sha256_update(&state, (const uint8_t *)ptr->buffer, ft_strlen(ptr->buffer));
