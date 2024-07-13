@@ -142,7 +142,9 @@ af6d8d9ae298642865cdc7abff561bdc605507b391dcbcc9248f23288b7130da
 af6d8d9ae298642865cdc7abff561bdc605507b391dcbcc9248f23288b7130da"
 
 # extensive sha256 tests with flags
-
+check_output "echo -n '' | ./ft_ssl sha256 -q" "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+check_output "echo -e '' | ./ft_ssl sha256 -q" "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+check_output "echo -n sha256 | ./ft_ssl sha256 -q" "5d5b09f6dcb2d53a5fffc60c4ac0d55fabdf556069d6631545f42aa6e3500f2e"
 
 
 if [ "$1" == "--valgrind" ]; then
