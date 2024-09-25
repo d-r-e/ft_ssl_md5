@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/ft_ssl",
-            "args": ["md5", "-q", "-r", "-s", "test"], // Add command line arguments here if necessary
+            "args": ["md5", "-q", "-r", "-s", "test"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -19,7 +19,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build ft_ssl", // This will trigger the build task before debugging
+            "preLaunchTask": "build ft_ssl",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
