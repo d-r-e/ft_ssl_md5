@@ -55,11 +55,15 @@ static void md5_init(t_md5_ctx *state) {
 }
 
 static void md5_transform(uint32_t *state, const uint8_t block[64]) {
-	uint32_t a = state[0], b = state[1], c = state[2], d = state[3];
+
+	uint32_t a, b, c, d;
 	uint32_t x[16];
 
+	a = state[0];
+	b = state[1];
+	c = state[2];
+	d = state[3];
 	decode(x, block, 64);
-
 	FF(a, b, c, d, x[0], 7, 0xd76aa478);
 	FF(d, a, b, c, x[1], 12, 0xe8c7b756);
 	FF(c, d, a, b, x[2], 17, 0x242070db);
@@ -76,7 +80,6 @@ static void md5_transform(uint32_t *state, const uint8_t block[64]) {
 	FF(d, a, b, c, x[13], 12, 0xfd987193);
 	FF(c, d, a, b, x[14], 17, 0xa679438e);
 	FF(b, c, d, a, x[15], 22, 0x49b40821);
-
 	GG(a, b, c, d, x[1], 5, 0xf61e2562);
 	GG(d, a, b, c, x[6], 9, 0xc040b340);
 	GG(c, d, a, b, x[11], 14, 0x265e5a51);
@@ -93,7 +96,6 @@ static void md5_transform(uint32_t *state, const uint8_t block[64]) {
 	GG(d, a, b, c, x[2], 9, 0xfcefa3f8);
 	GG(c, d, a, b, x[7], 14, 0x676f02d9);
 	GG(b, c, d, a, x[12], 20, 0x8d2a4c8a);
-
 	HH(a, b, c, d, x[5], 4, 0xfffa3942);
 	HH(d, a, b, c, x[8], 11, 0x8771f681);
 	HH(c, d, a, b, x[11], 16, 0x6d9d6122);
@@ -110,7 +112,6 @@ static void md5_transform(uint32_t *state, const uint8_t block[64]) {
 	HH(d, a, b, c, x[12], 11, 0xe6db99e5);
 	HH(c, d, a, b, x[15], 16, 0x1fa27cf8);
 	HH(b, c, d, a, x[2], 23, 0xc4ac5665);
-
 	II(a, b, c, d, x[0], 6, 0xf4292244);
 	II(d, a, b, c, x[7], 10, 0x432aff97);
 	II(c, d, a, b, x[14], 15, 0xab9423a7);
@@ -127,12 +128,10 @@ static void md5_transform(uint32_t *state, const uint8_t block[64]) {
 	II(d, a, b, c, x[11], 10, 0xbd3af235);
 	II(c, d, a, b, x[2], 15, 0x2ad7d2bb);
 	II(b, c, d, a, x[9], 21, 0xeb86d391);
-
 	state[0] += a;
 	state[1] += b;
 	state[2] += c;
 	state[3] += d;
-
 	ft_memset(x, 0, sizeof(x));
 }
 
@@ -242,7 +241,7 @@ void md5file(const t_buffer *file_buffer, t_flags flags) {
 	}
 	close(fd);
 	if (bytes_read == -1) {
-        close(fd);
+		close(fd);
 		printf("ft_ssl: md5: %s: %s\n", file_buffer->filename, strerror(errno));
 		return;
 	}
