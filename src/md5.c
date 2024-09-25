@@ -138,16 +138,16 @@ static void md5_transform(uint32_t *state, const uint8_t block[64]) {
 
 static void md5_update(t_md5_ctx *context, const uint8_t *input, size_t len) {
 	size_t i;
+	size_t j;
 	size_t index;
-	size_t part_len;
 
-	index = (context->count >> 3) & 0x3F;
+	index = (context->count >> 3) & 63;
 	context->count += ((uint64_t) len << 3);
-	part_len = 64 - index;
-	if (len >= part_len) {
-		ft_memcpy(&context->buffer[index], input, part_len);
+	j = 64 - index;
+	if (len >= j) {
+		ft_memcpy(&context->buffer[index], input, j);
 		md5_transform(&context->A, context->buffer);
-		for (i = part_len; i + 63 < len; i += 64)
+		for (i = j; i + 63 < len; i += 64)
 			md5_transform(&context->A, &input[i]);
 		index = 0;
 	} else {
