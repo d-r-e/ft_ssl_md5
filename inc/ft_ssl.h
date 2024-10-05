@@ -51,20 +51,20 @@ typedef struct s_sha256_ctx {
 	uint8_t buffer[64];
 } t_sha256_ctx;
 
-//* Our beloved libft functions *//
+
 int ft_strcmp(const char *s1, const char *s2);
 size_t ft_strlen(const char *s);
 void ft_memset(void *b, int c, size_t len);
 void ft_memcpy(void *dst, const void *src, size_t len);
 char *ft_strchr(const char *str, char c);
 char *ft_strndup(const char *s, size_t n);
+void ft_bzero(void *s, size_t n);
 
-//* Main *//
+
 void usage(const char **argv);
 void md5(int argc, const char **argv);
 void sha256(int argc, const char **argv);
 
-//* Common utils */
 void encode(uint8_t *output, uint32_t *input, size_t len);
 void decode(uint32_t *output, const uint8_t *input, size_t len);
 void print_digest(
