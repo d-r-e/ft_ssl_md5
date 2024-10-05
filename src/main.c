@@ -5,7 +5,7 @@ static int execute_command(int argc, const char **argv) {
 	                        {"sha256", sha256},
 	                        {NULL, NULL}};
 
-	for (int i = 0; commands[i].name; i++) {
+	for (unsigned int i = 0; commands[i].name; i++) {
 		if (ft_strcmp(argv[1], commands[i].name) == 0 && commands[i].func) {
 			commands[i].func(argc, argv);
 			return 0;

@@ -31,6 +31,7 @@ typedef struct s_buffer {
 	const char *filename;
 	struct s_buffer *next;
 	bool from_stdin;
+	bool allocated;
 } t_buffer;
 
 typedef struct s_md5_ctx {

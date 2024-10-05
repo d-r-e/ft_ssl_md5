@@ -1,17 +1,18 @@
 #include "ft_ssl.h"
-
+# define DEBUG_PRINT (x) (ft_printf("%s\n", x))
 static t_buffer *create_buffer(const char *buffer_content,
                                const char *filename,
                                bool from_stdin) {
 	t_buffer *new_buffer;
-	;
 
 	if (!(new_buffer = malloc(sizeof(t_buffer)))) {
 		perror("malloc");
 		exit(EXIT_FAILURE);
 	}
+	ft_bzero(new_buffer, sizeof(t_buffer));
 	new_buffer->buffer = buffer_content;
 	new_buffer->filename = filename;
+	new_buffer->allocated = false;
 	new_buffer->from_stdin = from_stdin;
 	new_buffer->next = NULL;
 	return new_buffer;
@@ -66,7 +67,7 @@ static int parse_flags(int argc,
 		}
 	}
 
-	if (flags->p) { // if -p is set, we need to read from stdin
+	if (flags->p) {
 		t_buffer *new_buffer = create_buffer(NULL, NULL, true);
 		new_buffer->next = *string_buffers;
 		*string_buffers = new_buffer;
@@ -85,6 +86,9 @@ static void clear_list(t_buffer *list) {
 	while (list) {
 		tmp = list;
 		list = list->next;
+		if (tmp->allocated) {
+			free((void *) tmp->buffer);
+		}
 		free(tmp);
 	}
 }
@@ -103,6 +107,7 @@ static void append_to_buffer(t_buffer **head, const char *data, size_t len) {
 		perror("ft_strndup");
 		exit(EXIT_FAILURE);
 	}
+	new_node->allocated = true;
 	new_node->next = NULL;
 	if (*head == NULL) {
 		*head = new_node;
@@ -141,12 +146,15 @@ static void from_stdin(t_flags flags) {
 	t_buffer *current = head;
 	while (current != NULL) {
 		t_buffer *next = current->next;
+		if (current->allocated && current->buffer) {
+			free((void *)current->buffer);
+		}
 		free(current);
 		current = next;
 	}
 }
 
-static void sha256stdin(t_flags flags) {
+static void sha256stdin(const t_flags flags) {
 	char buffer[BUFFER_SIZE];
 	ssize_t bytes;
 	bool read_stdin = false;
@@ -167,6 +175,9 @@ static void sha256stdin(t_flags flags) {
 	t_buffer *current = head;
 	while (current != NULL) {
 		t_buffer *next = current->next;
+		if (current->allocated && current->buffer) {
+			free((void *)current->buffer);
+		}
 		free(current);
 		current = next;
 	}
