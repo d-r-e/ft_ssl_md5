@@ -1,5 +1,5 @@
 #include "ft_ssl.h"
-# define DEBUG_PRINT (x) (ft_printf("%s\n", x))
+
 static t_buffer *create_buffer(const char *buffer_content,
                                const char *filename,
                                bool from_stdin) {
@@ -147,7 +147,7 @@ static void from_stdin(t_flags flags) {
 	while (current != NULL) {
 		t_buffer *next = current->next;
 		if (current->allocated && current->buffer) {
-			free((void *)current->buffer);
+			free((void *) current->buffer);
 		}
 		free(current);
 		current = next;
@@ -176,7 +176,7 @@ static void sha256stdin(const t_flags flags) {
 	while (current != NULL) {
 		t_buffer *next = current->next;
 		if (current->allocated && current->buffer) {
-			free((void *)current->buffer);
+			free((void *) current->buffer);
 		}
 		free(current);
 		current = next;

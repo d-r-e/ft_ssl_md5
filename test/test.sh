@@ -39,12 +39,12 @@ function check_output {
 
 function check_valgrind {
     local command="$1"
-    valgrind --leak-check=full --error-exitcode=1 $command &> /dev/null
+    valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 $command &> /dev/null
     if [[ $? -eq 0 ]]; then
         echo_green "[OK] No memory leaks detected in: $command"
     else
         echo_red "[FAIL] Memory leaks detected in: $command"
-        echo_yellow "     valgrind --leak-check=full --show-leaks=all --error-exitcode=1 $command"
+          echo_yellow "     valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 $command"
     fi
 }
 
@@ -154,6 +154,7 @@ if [ "$1" == "--valgrind" ]; then
   check_valgrind "./ft_ssl md5 -s 'test'"
   check_valgrind "./ft_ssl md5 -s '' -s bad -s wrong file1 file2 file3"
   check_valgrind "./ft_ssl md5 edge_case_file"
+  echo test | check_valgrind "./ft_ssl md5"
   check_valgrind "echo -n '' | ./ft_ssl md5 -r -q file -s test"
 
   check_valgrind "./ft_ssl sha256 -s ''"
@@ -161,6 +162,7 @@ if [ "$1" == "--valgrind" ]; then
   check_valgrind "./ft_ssl sha256 -s 'test'"
   check_valgrind "./ft_ssl sha256 -s '' -s bad -s wrong file1 file2 file3"
   check_valgrind "./ft_ssl sha256 edge_case_file"
+  echo test | check_valgrind "./ft_ssl sha256"
 fi
 
 rm -f $md5
